@@ -1,5 +1,5 @@
 # SuperPostDroidPunk
-is a Postman like app to send http requests writen in c# with .Net Core 3.1 and AvaloniaUI that can run on Windows, Linux and Mac.
+is a Postman like app to send http requests written in c# with .Net Core 3.1 and AvaloniaUI that can run on Windows, Linux and Mac.
 
 ## Why that name?
 
