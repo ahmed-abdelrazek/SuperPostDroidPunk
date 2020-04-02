@@ -3,7 +3,7 @@ is a Postman like app to send http requests written in c# with .Net Core 3.1 and
 
 ## Why that name?
 
-I was going to name it PostDroid you know because the future is for machines but my friend pointed out that there is might be Superhumans, Cyborg, Bots and AI so i smashed all of them together.
+I was going to name it PostDroid you know because the future is for machines but my friend pointed out that there is might be Superhumans, Cyborgs, Bots and AI so i smashed all of them together.
 
 ## The Application uses:
 	1- LiteDB https://github.com/mbdavid/LiteDB

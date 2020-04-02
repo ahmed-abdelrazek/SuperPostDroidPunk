@@ -9,18 +9,6 @@
         Icon="/Assets/SuperPostDroidPunk-icon.ico"
         Title="SuperPostDroidPunk">
 
-  <Window.DataTemplates>
-
-    <DataTemplate DataType="{x:Type models:Param}">
-      <Grid ColumnDefinitions="Auto,Auto,Auto">
-        <CheckBox IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}"/>
-        <TextBox Grid.Column="1" Text="{Binding Key, RelativeSource={RelativeSource TemplatedParent}}"/>
-        <TextBox Grid.Column="2" Text="{Binding Value, RelativeSource={RelativeSource TemplatedParent}}"/>
-      </Grid>
-    </DataTemplate>
-
-  </Window.DataTemplates>
-
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
@@ -34,20 +22,39 @@
     <Grid>
       <TabControl Grid.RowSpan="6">
         <TabItem Header="History">
-          <ListBox Items="{Binding History, Mode=TwoWay}" Margin="-5">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <Grid ColumnDefinitions="Auto" RowDefinitions="Auto, Auto, Auto" Margin="5">
-                  <TextBox Text="{Binding Name, Mode=TwoWay}" Watermark="Name" Margin="2,3" MinWidth="50" MaxWidth="200" HorizontalAlignment="Left"/>
-                  <StackPanel Orientation="Horizontal" Grid.Row="1">
-                    <TextBlock Text="{Binding HttpMethod, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2,3"/>
-                    <TextBox Text="{Binding Url, Mode=TwoWay}" IsReadOnly="True" Margin="2,3" HorizontalAlignment="Stretch" MaxWidth="280"/>
-                  </StackPanel>
-                  <TextBox Grid.Row="2" Text="{Binding Notes, Mode=TwoWay}" Watermark="Description" HorizontalAlignment="Stretch" Margin="2,3" MinWidth="50" MaxWidth="300"/>
-                </Grid>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
+          <Grid RowDefinitions="auto,auto">
+            <WrapPanel Orientation="Horizontal">
+              <Button Margin="5">
+                <Viewbox>
+                  <Canvas Width="24" Height="24">
+                    <Path Fill="{DynamicResource NotificationCardInformationBackgroundBrush}" Data="M5.59,7.41L7,6L13,12L7,18L5.59,16.59L10.17,12L5.59,7.41M11.59,7.41L13,6L19,12L13,18L11.59,16.59L16.17,12L11.59,7.41Z" />
+                  </Canvas>
+                </Viewbox>
+              </Button>
+              <Button Margin="5">
+                <Viewbox>
+                  <Canvas Width="24" Height="24">
+                    <Path Fill="{DynamicResource NotificationCardErrorBackgroundBrush}0." Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                  </Canvas>
+                </Viewbox>
+              </Button>
+            </WrapPanel>
+            <ListBox Items="{Binding History, Mode=TwoWay}" Grid.Row="1" Margin="-5">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto, Auto, Auto" Margin="5">
+                    <CheckBox IsChecked="{Binding IsSelected}"/>
+                    <TextBox Text="{Binding Name, Mode=TwoWay}" Grid.Column="1" Watermark="Name" Margin="2,3" MinWidth="50" MaxWidth="200" HorizontalAlignment="Left"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                      <TextBlock Text="{Binding HttpMethod, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2,3"/>
+                      <TextBox Text="{Binding Url, Mode=TwoWay}" IsReadOnly="True" Margin="2,3" HorizontalAlignment="Stretch" MaxWidth="280"/>
+                    </StackPanel>
+                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Notes, Mode=TwoWay}" Watermark="Description" HorizontalAlignment="Stretch" Margin="2,3" MinWidth="50" MaxWidth="300"/>
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Grid>
         </TabItem>
         <TabItem Header="Collections">
 
@@ -69,7 +76,11 @@
         <ComboBox Grid.Column="1" VerticalAlignment="Center" Margin="0,5" Items="{Binding HttpMethods}" SelectedItem="{Binding SelectedMethod}"/>
         <TextBlock Text="Url" Grid.Column="2" VerticalAlignment="Center" Margin="5,5,2,5"/>
         <TextBox Name="UrlTextBox" VerticalAlignment="Center" Text="{Binding Url}" Watermark="API Url" Grid.Column="3" Margin="0,5" AcceptsReturn="False"/>
-        <Button Name="SendButton" Content="Send" VerticalAlignment="Center" Grid.Column="4" Margin="5" CommandParameter="{Binding #UrlTextBox.Text}"/>
+        <Button Name="SendButton" VerticalAlignment="Center" Grid.Column="4" Margin="5" CommandParameter="{Binding #UrlTextBox.Text}">
+          <Canvas Width="20" Height="20">
+            <Path Fill="{DynamicResource NotificationCardWarningBackgroundBrush}" Data="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+          </Canvas>
+        </Button>
       </Grid>
 
       <TabControl Grid.Row="1" Grid.Column="2" Margin="5" MaxHeight="300" VerticalAlignment="Top">
@@ -88,7 +99,13 @@
                   </DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>
-              <Button Content="+" FontSize="16" FontWeight="Bold" Command="{Binding AddNewParam}" Margin="2,3" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" VerticalContentAlignment="Top"/>
+              <Button Command="{Binding AddNewParam}" Margin="2,3" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" VerticalContentAlignment="Top">
+                <Viewbox>
+                  <Canvas Width="24" Height="24">
+                    <Path Fill="{DynamicResource NotificationCardInformationBackgroundBrush}" Data="M2,16H10V14H2M18,14V10H16V14H12V16H16V20H18V16H22V14M14,6H2V8H14M14,10H2V12H14V10Z" />
+                  </Canvas>
+                </Viewbox>
+              </Button>
             </Grid>
           </ScrollViewer>
         </TabItem>
