@@ -47,5 +47,7 @@ namespace SuperPostDroidPunk.Models
         public string Xml { get; set; }
 
         public string Notes { get; set; }
+
+        public bool IsSelected { get; set; }
     }
 }
