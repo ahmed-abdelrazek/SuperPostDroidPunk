@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media;
+using DynamicData;
 using Flurl;
 using LiteDB;
 using Newtonsoft.Json;
@@ -23,7 +24,11 @@ namespace SuperPostDroidPunk.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private bool isSavingHistory;
+        private bool isDeletingHistory;
         private bool isSending;
+        private bool isErrorInSaveHistoryExist;
+        private bool isErrorInDeleteHistoryExist;
         private bool isErrorInRequestExist;
         private bool isErrorInResponseExist;
 
@@ -130,6 +135,9 @@ namespace SuperPostDroidPunk.ViewModels
 
         public string NotificationMessage { get => _notificationMessage; set => this.RaiseAndSetIfChanged(ref _notificationMessage, value); }
 
+        public ReactiveCommand<Unit, Unit> SaveModifiedResponses { get; }
+        public ReactiveCommand<Unit, Unit> CopyResponseToCollection { get; }
+        public ReactiveCommand<Unit, Unit> DeleteSelectedResponses { get; }
         public ReactiveCommand<string, Unit> SendRequest { get; }
         public ReactiveCommand<Unit, Unit> AddNewParam { get; }
 
@@ -142,6 +150,10 @@ namespace SuperPostDroidPunk.ViewModels
             // Load all the UI data from async method for faster startups
             Task.Run(() => LoadAsync());
 
+            SaveModifiedResponses = ReactiveCommand.Create(DoSaveModifiedResponses);
+            CopyResponseToCollection = ReactiveCommand.Create(DoCopyResponseToCollection);
+            DeleteSelectedResponses = ReactiveCommand.Create(DoDeleteSelectedResponses);
+
             SendRequest = ReactiveCommand.Create<string>(DoSendRequest);
             AddNewParam = ReactiveCommand.Create(DoAddNewParam);
         }
@@ -151,8 +163,16 @@ namespace SuperPostDroidPunk.ViewModels
             await Task.Run(() =>
             {
                 // Load all Http request methods and choose the first one as the default normally should be GET
-                HttpMethods = new ObservableCollection<string>(typeof(HttpMethod).GetProperties().Where(x => x.IsStatic()).Select(x => x.Name));
-                SelectedMethod = HttpMethods.FirstOrDefault();
+                try
+                {
+                    HttpMethods = new ObservableCollection<string>(typeof(HttpMethod).GetProperties().Where(x => x.IsStatic()).Select(x => x.Name));
+                    SelectedMethod = HttpMethods.First();
+                }
+                catch
+                {
+                    HttpMethods = new ObservableCollection<string>(typeof(HttpMethod).GetProperties().Where(x => x.IsStatic()).Select(x => x.Name));
+                    SelectedMethod = HttpMethods.FirstOrDefault();
+                }
 
                 AuthorizationTypes = new ObservableCollection<AuthorizationType>(Enum.GetValues(typeof(AuthorizationType)).Cast<AuthorizationType>());
                 SelectedAuthType = AuthorizationTypes.FirstOrDefault();
@@ -162,7 +182,7 @@ namespace SuperPostDroidPunk.ViewModels
             });
         }
 
-        public async void DoSendRequest(string url)
+        private async void DoSendRequest(string url)
         {
             if (!isSending && CheckUrlValid(url))
             {
@@ -217,8 +237,8 @@ namespace SuperPostDroidPunk.ViewModels
                 var httpContent = new StringContent(string.Empty);
                 if (!string.IsNullOrWhiteSpace(RequestBody))
                 {
-                    newResponse.BodyType = BodyType.Json;
-                    newResponse.RawBody = RequestBody;
+                    newResponse.RequestBodyType = BodyType.Json;
+                    newResponse.RequestRawBody = RequestBody;
 
                     // Serialize the body into a JSON String
                     var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(RequestBody));
@@ -371,18 +391,119 @@ namespace SuperPostDroidPunk.ViewModels
             else
             {
                 NotificationBrush = new SolidColorBrush(Color.Parse("#BD202C"), 0.75);
-                NotificationMessage = "Sending or Url is empty/invalid.";
+                NotificationMessage = "Already sending or Url is empty/invalid.";
                 IsNotificationVisible = true;
+            }
+        }
+
+        /// <summary>
+        /// Get all items in the history and save the Modified Ones
+        /// </summary>
+        private async void DoSaveModifiedResponses()
+        {
+            if (!isSavingHistory)
+            {
+                isSavingHistory = true;
+                try
+                {
+                    using var db = new LiteDatabase(DbConfig.ConnectionString);
+                    var col = db.GetCollection<Response>(DbConfig.ResponseCollection);
+
+                    await Task.Run(() =>
+                    {
+                        foreach (var item in History.Where(x => x.IsModified == true))
+                        {
+                            item.IsModified = false;
+                            col.Update(item);
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    isErrorInSaveHistoryExist = true;
+                }
+                finally
+                {
+                    if (isErrorInSaveHistoryExist)
+                    {
+                        NotificationBrush = new SolidColorBrush(Color.Parse("#FDB328"), 0.75);
+                        NotificationMessage = "Saved Some but got error.";
+                    }
+                    else
+                    {
+                        NotificationBrush = new SolidColorBrush(Color.Parse("#1F9E45"), 0.75);
+                        NotificationMessage = "Saving Done.";
+                    }
+                    IsNotificationVisible = true;
+                    isSavingHistory = false;
+                    isErrorInSaveHistoryExist = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds selected Responses to a Collection in the collection tab
+        /// </summary>
+        private void DoCopyResponseToCollection()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes the selected Responses from the history list
+        /// </summary>
+        private async void DoDeleteSelectedResponses()
+        {
+            if (!isDeletingHistory)
+            {
+                isDeletingHistory = true;
+                try
+                {
+                    using var db = new LiteDatabase(DbConfig.ConnectionString);
+                    var col = db.GetCollection<Response>(DbConfig.ResponseCollection);
+
+                    var toBeDeleted = History.Where(x => x.IsSelected == true);
+
+                    await Task.Run(() =>
+                    {
+                        foreach (var item in toBeDeleted)
+                        {
+                            col.Delete(item.Id);
+                        }
+                    });
+                    History.RemoveMany(toBeDeleted);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    isErrorInDeleteHistoryExist = true;
+                }
+                finally
+                {
+                    if (isErrorInDeleteHistoryExist)
+                    {
+                        NotificationBrush = new SolidColorBrush(Color.Parse("#FDB328"), 0.75);
+                        NotificationMessage = "Deleted Some but got error.";
+                    }
+                    else
+                    {
+                        NotificationBrush = new SolidColorBrush(Color.Parse("#1F9E45"), 0.75);
+                        NotificationMessage = "Deleteing Done.";
+                    }
+                    IsNotificationVisible = true;
+                    isDeletingHistory = false;
+                    isErrorInDeleteHistoryExist = false;
+                }
             }
         }
 
         /// <summary>
         /// Param add button
         /// </summary>
-        private async void DoAddNewParam()
+        private void DoAddNewParam()
         {
             Params.Add(new Param { IsSelected = true });
-            await Task.CompletedTask;
         }
 
         /// <summary>

@@ -24,7 +24,27 @@
         <TabItem Header="History">
           <Grid RowDefinitions="auto,auto">
             <WrapPanel Orientation="Horizontal">
-              <Button Margin="5">
+              <Button Cursor="Hand" Command="{Binding SaveModifiedResponses}" Margin="5">
+                <Viewbox>
+                  <Canvas Width="24" Height="24">
+                    <Path Fill="{DynamicResource NotificationCardSuccessBackgroundBrush}" Data="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
+                  </Canvas>
+                </Viewbox>
+                <Button.Styles>
+                  <Style Selector="Button">
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardSuccessBackgroundBrush}"/>
+                  </Style>
+                  <Style Selector="Button:pointerover /template/ ContentPresenter">
+                    <Setter Property="Width" Value="35"/>
+                  </Style>
+                  <Style Selector="Button:pressed  /template/ ContentPresenter">
+                    <Setter Property="Width" Value="30"/>
+                  </Style>
+                </Button.Styles>
+              </Button>
+              <Button Cursor="Hand" Command="{Binding CopyResponseToCollection}" Margin="5">
                 <Viewbox>
                   <Canvas Width="24" Height="24">
                     <Path Fill="{DynamicResource NotificationCardInformationBackgroundBrush}" Data="M5.59,7.41L7,6L13,12L7,18L5.59,16.59L10.17,12L5.59,7.41M11.59,7.41L13,6L19,12L13,18L11.59,16.59L16.17,12L11.59,7.41Z" />
@@ -32,7 +52,7 @@
                 </Viewbox>
                 <Button.Styles>
                   <Style Selector="Button">
-                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
                     <Setter Property="BorderThickness" Value="1"/>
                     <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardInformationBackgroundBrush}"/>
                   </Style>
@@ -40,19 +60,19 @@
                     <Setter Property="Width" Value="35"/>
                   </Style>
                   <Style Selector="Button:pressed  /template/ ContentPresenter">
-                    <Setter Property="Width" Value="26"/>
+                    <Setter Property="Width" Value="30"/>
                   </Style>
                 </Button.Styles>
               </Button>
-              <Button Margin="5">
+              <Button Cursor="Hand" Command="{Binding DeleteSelectedResponses}" Margin="5">
                 <Viewbox>
                   <Canvas Width="24" Height="24">
-                    <Path Fill="{DynamicResource NotificationCardErrorBackgroundBrush}0." Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                    <Path Fill="{DynamicResource NotificationCardErrorBackgroundBrush}" Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                   </Canvas>
                 </Viewbox>
                 <Button.Styles>
                   <Style Selector="Button">
-                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
                     <Setter Property="BorderThickness" Value="1"/>
                     <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardErrorBackgroundBrush}"/>
                   </Style>
@@ -60,16 +80,16 @@
                     <Setter Property="Width" Value="35"/>
                   </Style>
                   <Style Selector="Button:pressed  /template/ ContentPresenter">
-                    <Setter Property="Width" Value="26"/>
+                    <Setter Property="Width" Value="30"/>
                   </Style>
                 </Button.Styles>
               </Button>
             </WrapPanel>
-            <ListBox Items="{Binding History, Mode=TwoWay}" Grid.Row="1" Margin="-5">
+            <ListBox Items="{Binding History, Mode=TwoWay}" SelectedItem="{Binding SelectedHistory}" Grid.Row="1" Margin="-5">
               <ListBox.ItemTemplate>
                 <DataTemplate>
                   <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto, Auto, Auto" Margin="5">
-                    <CheckBox IsChecked="{Binding IsSelected}"/>
+                    <CheckBox IsChecked="{Binding IsSelected}" HorizontalAlignment="Center" Margin="2"/>
                     <TextBox Text="{Binding Name, Mode=TwoWay}" Grid.Column="1" Watermark="Name" Margin="2,3" MinWidth="50" MaxWidth="200" HorizontalAlignment="Left"/>
                     <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
                       <TextBlock Text="{Binding HttpMethod, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2,3"/>
@@ -102,13 +122,13 @@
         <ComboBox Grid.Column="1" VerticalAlignment="Center" Margin="0,5" Items="{Binding HttpMethods}" SelectedItem="{Binding SelectedMethod}"/>
         <TextBlock Text="Url" Grid.Column="2" VerticalAlignment="Center" Margin="5,5,2,5"/>
         <TextBox Name="UrlTextBox" VerticalAlignment="Center" Text="{Binding Url}" Watermark="API Url" Grid.Column="3" Margin="0,5" AcceptsReturn="False"/>
-        <Button Name="SendButton" VerticalAlignment="Center" Grid.Column="4" Margin="5" CommandParameter="{Binding #UrlTextBox.Text}">
+        <Button Name="SendButton" Cursor="Hand" VerticalAlignment="Center" Grid.Column="4" Margin="5" CommandParameter="{Binding #UrlTextBox.Text}">
           <Canvas Width="20" Height="20">
             <Path Fill="{DynamicResource NotificationCardWarningBackgroundBrush}" Data="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
           </Canvas>
           <Button.Styles>
             <Style Selector="Button">
-              <Setter Property="Background" Value="Transparent"/>
+              <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
               <Setter Property="BorderThickness" Value="1"/>
               <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardWarningBackgroundBrush}"/>
             </Style>
@@ -116,7 +136,7 @@
               <Setter Property="Width" Value="35"/>
             </Style>
             <Style Selector="Button:pressed  /template/ ContentPresenter">
-              <Setter Property="Width" Value="26"/>
+              <Setter Property="Width" Value="30"/>
             </Style>
           </Button.Styles>
         </Button>
@@ -138,7 +158,7 @@
                   </DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>
-              <Button Command="{Binding AddNewParam}" Margin="2,3" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" VerticalContentAlignment="Top">
+              <Button Cursor="Hand" Command="{Binding AddNewParam}" Margin="2,3" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" VerticalContentAlignment="Top">
                 <Viewbox>
                   <Canvas Width="24" Height="24">
                     <Path Fill="{DynamicResource NotificationCardInformationBackgroundBrush}" Data="M2,16H10V14H2M18,14V10H16V14H12V16H16V20H18V16H22V14M14,6H2V8H14M14,10H2V12H14V10Z" />
@@ -146,7 +166,7 @@
                 </Viewbox>
                 <Button.Styles>
                   <Style Selector="Button">
-                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
                     <Setter Property="BorderThickness" Value="1"/>
                     <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardInformationBackgroundBrush}"/>
                   </Style>
@@ -154,7 +174,7 @@
                     <Setter Property="Width" Value="35"/>
                   </Style>
                   <Style Selector="Button:pressed  /template/ ContentPresenter">
-                    <Setter Property="Width" Value="26"/>
+                    <Setter Property="Width" Value="30"/>
                   </Style>
                 </Button.Styles>
               </Button>

@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SuperPostDroidPunk.Models
 {
     public class Response : AddDateTime
     {
+        private string name;
+        private string notes;
+
         public Response()
         {
             Headers = new List<Param>();
@@ -14,7 +18,18 @@ namespace SuperPostDroidPunk.Models
 
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get => name;
+            set
+            {
+                if (name != value)
+                {
+                    name = value;
+                    IsModified = true;
+                }
+            }
+        }
 
         public string HttpMethod { get; set; }
 
@@ -32,13 +47,13 @@ namespace SuperPostDroidPunk.Models
 
         public List<Param> Params { get; set; }
 
-        public Core.BodyType BodyType { get; set; }
+        public Core.BodyType RequestBodyType { get; set; }
 
         public List<Param> FormData { get; set; }
 
         public List<Param> FormUrlEncoded { get; set; }
 
-        public string RawBody { get; set; }
+        public string RequestRawBody { get; set; }
 
         public string Raw { get; set; }
 
@@ -46,8 +61,22 @@ namespace SuperPostDroidPunk.Models
 
         public string Xml { get; set; }
 
-        public string Notes { get; set; }
+        public string Notes
+        {
+            get => notes;
+            set
+            {
+                if (notes != value)
+                {
+                    notes = value;
+                    IsModified = true;
+                }
+            }
+        }
 
         public bool IsSelected { get; set; }
+
+        [NotMapped]
+        public bool IsModified { get; set; }
     }
 }
