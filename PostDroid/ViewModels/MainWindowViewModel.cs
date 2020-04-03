@@ -48,6 +48,7 @@ namespace SuperPostDroidPunk.ViewModels
         private ObservableCollection<Param> _params;
         private ObservableCollection<AuthorizationType> _authorizationTypes;
         private ObservableCollection<Response> _history;
+        private Response _selectedHistory;
         private bool _isNotificationVisible;
         private SolidColorBrush _notificationBrush;
         private string _notificationMessage;
@@ -113,6 +114,33 @@ namespace SuperPostDroidPunk.ViewModels
         public string ResponseBodyRaw { get => _responseBodyRaw; set => this.RaiseAndSetIfChanged(ref _responseBodyRaw, value); }
 
         public ObservableCollection<Response> History { get => _history; set => this.RaiseAndSetIfChanged(ref _history, value); }
+
+        public Response SelectedHistory
+        {
+            get => _selectedHistory;
+            set
+            {
+                if (_selectedHistory != value)
+                {
+                    this.RaiseAndSetIfChanged(ref _selectedHistory, value);
+                    SelectedMethod = _selectedHistory.HttpMethod;
+                    Params = new ObservableCollection<Param>();
+                    foreach (var item in _selectedHistory.Params)
+                    {
+                        Params.Add(item);
+                    }
+                    SelectedAuthType = _selectedHistory.AuthorizationType;
+                    AuthUsername = _selectedHistory.AuthUserName;
+                    AuthPassword = _selectedHistory.AuthPassword;
+                    AuthBearer = _selectedHistory.AuthBearerToken;
+                    RequestBody = _selectedHistory.RequestRawBody;
+                    ResponseBodyJson = _selectedHistory.Json;
+                    ResponseBodyXml = _selectedHistory.Xml;
+                    ResponseBodyRaw = _selectedHistory.Raw;
+                    Url = _selectedHistory.Url;
+                }
+            }
+        }
 
         public bool IsNotificationVisible
         {
