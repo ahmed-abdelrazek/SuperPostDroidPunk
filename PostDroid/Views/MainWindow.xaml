@@ -30,6 +30,19 @@
                     <Path Fill="{DynamicResource NotificationCardInformationBackgroundBrush}" Data="M5.59,7.41L7,6L13,12L7,18L5.59,16.59L10.17,12L5.59,7.41M11.59,7.41L13,6L19,12L13,18L11.59,16.59L16.17,12L11.59,7.41Z" />
                   </Canvas>
                 </Viewbox>
+                <Button.Styles>
+                  <Style Selector="Button">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardInformationBackgroundBrush}"/>
+                  </Style>
+                  <Style Selector="Button:pointerover /template/ ContentPresenter">
+                    <Setter Property="Width" Value="35"/>
+                  </Style>
+                  <Style Selector="Button:pressed  /template/ ContentPresenter">
+                    <Setter Property="Width" Value="26"/>
+                  </Style>
+                </Button.Styles>
               </Button>
               <Button Margin="5">
                 <Viewbox>
@@ -37,6 +50,19 @@
                     <Path Fill="{DynamicResource NotificationCardErrorBackgroundBrush}0." Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                   </Canvas>
                 </Viewbox>
+                <Button.Styles>
+                  <Style Selector="Button">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardErrorBackgroundBrush}"/>
+                  </Style>
+                  <Style Selector="Button:pointerover /template/ ContentPresenter">
+                    <Setter Property="Width" Value="35"/>
+                  </Style>
+                  <Style Selector="Button:pressed  /template/ ContentPresenter">
+                    <Setter Property="Width" Value="26"/>
+                  </Style>
+                </Button.Styles>
               </Button>
             </WrapPanel>
             <ListBox Items="{Binding History, Mode=TwoWay}" Grid.Row="1" Margin="-5">
@@ -80,6 +106,19 @@
           <Canvas Width="20" Height="20">
             <Path Fill="{DynamicResource NotificationCardWarningBackgroundBrush}" Data="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
           </Canvas>
+          <Button.Styles>
+            <Style Selector="Button">
+              <Setter Property="Background" Value="Transparent"/>
+              <Setter Property="BorderThickness" Value="1"/>
+              <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardWarningBackgroundBrush}"/>
+            </Style>
+            <Style Selector="Button:pointerover /template/ ContentPresenter">
+              <Setter Property="Width" Value="35"/>
+            </Style>
+            <Style Selector="Button:pressed  /template/ ContentPresenter">
+              <Setter Property="Width" Value="26"/>
+            </Style>
+          </Button.Styles>
         </Button>
       </Grid>
 
@@ -105,6 +144,19 @@
                     <Path Fill="{DynamicResource NotificationCardInformationBackgroundBrush}" Data="M2,16H10V14H2M18,14V10H16V14H12V16H16V20H18V16H22V14M14,6H2V8H14M14,10H2V12H14V10Z" />
                   </Canvas>
                 </Viewbox>
+                <Button.Styles>
+                  <Style Selector="Button">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardInformationBackgroundBrush}"/>
+                  </Style>
+                  <Style Selector="Button:pointerover /template/ ContentPresenter">
+                    <Setter Property="Width" Value="35"/>
+                  </Style>
+                  <Style Selector="Button:pressed  /template/ ContentPresenter">
+                    <Setter Property="Width" Value="26"/>
+                  </Style>
+                </Button.Styles>
               </Button>
             </Grid>
           </ScrollViewer>
