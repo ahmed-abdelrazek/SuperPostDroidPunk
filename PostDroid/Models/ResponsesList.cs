@@ -6,6 +6,7 @@ namespace SuperPostDroidPunk.Models
     {
         public ResponsesList()
         {
+            SubList = new List<ResponsesList>();
             Responses = new List<Response>();
         }
 
@@ -13,7 +14,9 @@ namespace SuperPostDroidPunk.Models
 
         public string Name { get; set; }
 
-        public List<Response> Responses { get; set; }
+        public virtual List<ResponsesList> SubList { get; set; }
+
+        public virtual List<Response> Responses { get; set; }
 
         public string Notes { get; set; }
     }

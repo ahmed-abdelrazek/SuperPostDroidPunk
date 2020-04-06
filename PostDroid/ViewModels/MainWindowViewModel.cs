@@ -48,6 +48,7 @@ namespace SuperPostDroidPunk.ViewModels
         private ObservableCollection<Param> _params;
         private ObservableCollection<AuthorizationType> _authorizationTypes;
         private ObservableCollection<Response> _history;
+        private ObservableCollection<ResponsesList> _historyCollection;
         private Response _selectedHistory;
         private bool _isNotificationVisible;
         private SolidColorBrush _notificationBrush;
@@ -114,6 +115,8 @@ namespace SuperPostDroidPunk.ViewModels
         public string ResponseBodyRaw { get => _responseBodyRaw; set => this.RaiseAndSetIfChanged(ref _responseBodyRaw, value); }
 
         public ObservableCollection<Response> History { get => _history; set => this.RaiseAndSetIfChanged(ref _history, value); }
+
+        public ObservableCollection<ResponsesList> HistoryCollection { get => _historyCollection; set => this.RaiseAndSetIfChanged(ref _historyCollection, value); }
 
         public Response SelectedHistory
         {
@@ -207,6 +210,34 @@ namespace SuperPostDroidPunk.ViewModels
 
                 using var db = new LiteDatabase(DbConfig.ConnectionString);
                 History = new ObservableCollection<Response>(db.GetCollection<Response>(DbConfig.ResponseCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
+                HistoryCollection = new ObservableCollection<ResponsesList>(db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
+                HistoryCollection.Add(new ResponsesList
+                {
+                    Name = "why",
+                    CreateAt = DateTime.Now,
+                    Responses = new List<Response>
+                    {
+                        new Response
+                        {
+                            Name = "response",
+                            CreateAt = DateTime.Now
+                        }
+                    },
+                    SubList = new List<ResponsesList>
+                    {
+                        new ResponsesList
+                        {
+                            Name = "sub why",
+                            CreateAt = DateTime.Now
+                        }
+                    }
+                });
+
+                var col = db.GetCollection<ResponsesList>(DbConfig.HistoryCollection);
+                foreach (var item in HistoryCollection)
+                {
+                    col.Insert(item);
+                }
             });
         }
 

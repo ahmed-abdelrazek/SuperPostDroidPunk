@@ -76,7 +76,6 @@ namespace SuperPostDroidPunk.Models
 
         public bool IsSelected { get; set; }
 
-        [NotMapped]
         public bool IsModified { get; set; }
     }
 }

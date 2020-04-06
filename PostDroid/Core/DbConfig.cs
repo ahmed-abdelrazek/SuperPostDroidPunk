@@ -15,5 +15,8 @@ namespace SuperPostDroidPunk.Core
 
         // LiteDb Collection for Response as string
         public static string ResponseCollection { get; } = "Responses";
+
+        // LiteDb Collection for ResponseCollection as string
+        public static string HistoryCollection { get; } = "HistoryCollection";
     }
 }
