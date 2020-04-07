@@ -14,9 +14,9 @@ namespace SuperPostDroidPunk.Models
 
         public string Name { get; set; }
 
-        public virtual List<ResponsesList> SubList { get; set; }
-
         public virtual List<Response> Responses { get; set; }
+
+        public virtual List<ResponsesList> SubList { get; set; }
 
         public string Notes { get; set; }
     }

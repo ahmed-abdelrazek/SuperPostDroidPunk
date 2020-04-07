@@ -211,33 +211,7 @@ namespace SuperPostDroidPunk.ViewModels
                 using var db = new LiteDatabase(DbConfig.ConnectionString);
                 History = new ObservableCollection<Response>(db.GetCollection<Response>(DbConfig.ResponseCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
                 HistoryCollection = new ObservableCollection<ResponsesList>(db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
-                HistoryCollection.Add(new ResponsesList
-                {
-                    Name = "why",
-                    CreateAt = DateTime.Now,
-                    Responses = new List<Response>
-                    {
-                        new Response
-                        {
-                            Name = "response",
-                            CreateAt = DateTime.Now
-                        }
-                    },
-                    SubList = new List<ResponsesList>
-                    {
-                        new ResponsesList
-                        {
-                            Name = "sub why",
-                            CreateAt = DateTime.Now
-                        }
-                    }
-                });
 
-                var col = db.GetCollection<ResponsesList>(DbConfig.HistoryCollection);
-                foreach (var item in HistoryCollection)
-                {
-                    col.Insert(item);
-                }
             });
         }
 
