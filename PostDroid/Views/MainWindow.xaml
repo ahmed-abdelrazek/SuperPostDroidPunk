@@ -88,14 +88,14 @@
             <ListBox Items="{Binding History, Mode=TwoWay}" SelectedItem="{Binding SelectedHistory}" Grid.Row="1" Margin="-5">
               <ListBox.ItemTemplate>
                 <DataTemplate>
-                  <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto, Auto, Auto" Margin="5">
+                  <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto, Auto, Auto" Margin="5">
                     <CheckBox IsChecked="{Binding IsSelected}" HorizontalAlignment="Center" Margin="2"/>
-                    <TextBox Text="{Binding Name, Mode=TwoWay}" Grid.Column="1" Watermark="Name" Margin="2,3" MinWidth="50" MaxWidth="200" HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Name, Mode=TwoWay}" Grid.Column="1" Watermark="Name" Margin="2,3" HorizontalAlignment="Stretch" BorderThickness="0,0,0,2"/>
                     <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
                       <TextBlock Text="{Binding HttpMethod, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="2,3"/>
-                      <TextBox Text="{Binding Url, Mode=TwoWay}" IsReadOnly="True" Margin="2,3" HorizontalAlignment="Stretch" MaxWidth="280"/>
+                      <TextBox Text="{Binding Url, Mode=TwoWay}" IsReadOnly="True" Margin="2,3" HorizontalAlignment="Stretch" BorderThickness="0,0,0,1"/>
                     </StackPanel>
-                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Notes, Mode=TwoWay}" Watermark="Description" HorizontalAlignment="Stretch" Margin="2,3" MinWidth="50" MaxWidth="300"/>
+                    <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Notes, Mode=TwoWay}" Watermark="Description" HorizontalAlignment="Stretch" Margin="2,3" BorderThickness="0,0,0,2"/>
                   </Grid>
                 </DataTemplate>
               </ListBox.ItemTemplate>
@@ -103,7 +103,87 @@
           </Grid>
         </TabItem>
         <TabItem Header="Collections">
+          <Grid RowDefinitions="auto,*">
+            <WrapPanel Orientation="Horizontal">
+              <Button Cursor="Hand" MaxHeight="32" Command="{Binding SaveModifiedResponses}" Margin="5">
+                <Viewbox>
+                  <Canvas Width="24" Height="24">
+                    <Path Fill="{DynamicResource NotificationCardSuccessBackgroundBrush}" Data="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
+                  </Canvas>
+                </Viewbox>
+                <Button.Styles>
+                  <Style Selector="Button">
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardSuccessBackgroundBrush}"/>
+                  </Style>
+                  <Style Selector="Button:pointerover /template/ ContentPresenter">
+                    <Setter Property="Width" Value="35"/>
+                  </Style>
+                  <Style Selector="Button:pressed  /template/ ContentPresenter">
+                    <Setter Property="Width" Value="30"/>
+                  </Style>
+                </Button.Styles>
+              </Button>
+              <Button Cursor="Hand" MaxHeight="32" Command="{Binding CopyResponseToCollection}" Margin="5">
+                <Viewbox>
+                  <Canvas Width="24" Height="24">
+                    <Path Fill="{DynamicResource NotificationCardInformationBackgroundBrush}" Data="M5.59,7.41L7,6L13,12L7,18L5.59,16.59L10.17,12L5.59,7.41M11.59,7.41L13,6L19,12L13,18L11.59,16.59L16.17,12L11.59,7.41Z" />
+                  </Canvas>
+                </Viewbox>
+                <Button.Styles>
+                  <Style Selector="Button">
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardInformationBackgroundBrush}"/>
+                  </Style>
+                  <Style Selector="Button:pointerover /template/ ContentPresenter">
+                    <Setter Property="Width" Value="35"/>
+                  </Style>
+                  <Style Selector="Button:pressed  /template/ ContentPresenter">
+                    <Setter Property="Width" Value="30"/>
+                  </Style>
+                </Button.Styles>
+              </Button>
+              <Button Cursor="Hand" MaxHeight="32" Command="{Binding DeleteSelectedResponses}" Margin="5">
+                <Viewbox>
+                  <Canvas Width="24" Height="24">
+                    <Path Fill="{DynamicResource NotificationCardErrorBackgroundBrush}" Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                  </Canvas>
+                </Viewbox>
+                <Button.Styles>
+                  <Style Selector="Button">
+                    <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardErrorBackgroundBrush}"/>
+                  </Style>
+                  <Style Selector="Button:pointerover /template/ ContentPresenter">
+                    <Setter Property="Width" Value="35"/>
+                  </Style>
+                  <Style Selector="Button:pressed  /template/ ContentPresenter">
+                    <Setter Property="Width" Value="30"/>
+                  </Style>
+                </Button.Styles>
+              </Button>
+            </WrapPanel>
 
+            <TreeView Items="{Binding Tree}" Grid.Row="1" Margin="-5">
+              <TreeView.ItemTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}">
+                  <Grid ColumnDefinitions="auto,*">
+                    <Canvas Width="24" Margin="0,5,0,0">
+                      <Path Fill="{Binding Icon.Fill}" Data="{Binding Icon.Data}" />
+                    </Canvas>
+                    <StackPanel Orientation="Vertical" Grid.Column="1">
+                      <TextBox Text="{Binding Name, Mode=TwoWay}" Watermark="Name" Margin="2" BorderThickness="0,0,0,2"/>
+                      <TextBox Text="{Binding Notes, Mode=TwoWay}" Watermark="Description" Margin="2" BorderThickness="0,0,0,2"/>
+                    </StackPanel>
+                  </Grid>
+                </TreeDataTemplate>
+              </TreeView.ItemTemplate>
+            </TreeView>
+
+          </Grid>
         </TabItem>
       </TabControl>
     </Grid>

@@ -53,6 +53,7 @@ namespace SuperPostDroidPunk.ViewModels
         private bool _isNotificationVisible;
         private SolidColorBrush _notificationBrush;
         private string _notificationMessage;
+        private ObservableCollection<CollectionNodeViewModel> _tree;
 
         public ObservableCollection<string> HttpMethods { get; set; }
 
@@ -118,6 +119,8 @@ namespace SuperPostDroidPunk.ViewModels
 
         public ObservableCollection<ResponsesList> HistoryCollection { get => _historyCollection; set => this.RaiseAndSetIfChanged(ref _historyCollection, value); }
 
+        public ObservableCollection<CollectionNodeViewModel> Tree { get => _tree; set => this.RaiseAndSetIfChanged(ref _tree, value); }
+
         public Response SelectedHistory
         {
             get => _selectedHistory;
@@ -176,7 +179,10 @@ namespace SuperPostDroidPunk.ViewModels
         public MainWindowViewModel()
         {
             Headers = new ObservableCollection<Param>();
-            Params = new ObservableCollection<Param>();
+            Params = new ObservableCollection<Param>
+            {
+                new Param()
+            };
 
             // Load all the UI data from async method for faster startups
             Task.Run(() => LoadAsync());
@@ -208,10 +214,23 @@ namespace SuperPostDroidPunk.ViewModels
                 AuthorizationTypes = new ObservableCollection<AuthorizationType>(Enum.GetValues(typeof(AuthorizationType)).Cast<AuthorizationType>());
                 SelectedAuthType = AuthorizationTypes.FirstOrDefault();
 
-                using var db = new LiteDatabase(DbConfig.ConnectionString);
-                History = new ObservableCollection<Response>(db.GetCollection<Response>(DbConfig.ResponseCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
-                HistoryCollection = new ObservableCollection<ResponsesList>(db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
+                using (var db = new LiteDatabase(DbConfig.ConnectionString))
+                {
+                    History = new ObservableCollection<Response>(db.GetCollection<Response>(DbConfig.ResponseCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
+                    HistoryCollection = new ObservableCollection<ResponsesList>(db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
+                }
+                Tree = new ObservableCollection<CollectionNodeViewModel>();
 
+                foreach (var item in HistoryCollection)
+                {
+                    Tree.Add(new CollectionNodeViewModel
+                    {
+                        Id = item.Id,
+                        Name = item.Name,
+                        Notes = item.Notes,
+                        IsFolder = true,
+                    });
+                }
             });
         }
 

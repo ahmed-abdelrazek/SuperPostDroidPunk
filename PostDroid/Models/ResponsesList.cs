@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 
 namespace SuperPostDroidPunk.Models
 {
@@ -6,17 +6,17 @@ namespace SuperPostDroidPunk.Models
     {
         public ResponsesList()
         {
-            SubList = new List<ResponsesList>();
-            Responses = new List<Response>();
+            Responses = new ObservableCollection<Response>();
+            SubList = new ObservableCollection<ResponsesList>();
         }
 
         public int Id { get; set; }
 
         public string Name { get; set; }
 
-        public virtual List<Response> Responses { get; set; }
+        public virtual ObservableCollection<Response> Responses { get; set; }
 
-        public virtual List<ResponsesList> SubList { get; set; }
+        public virtual ObservableCollection<ResponsesList> SubList { get; set; }
 
         public string Notes { get; set; }
     }

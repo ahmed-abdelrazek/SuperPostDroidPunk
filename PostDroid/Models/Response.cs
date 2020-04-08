@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.ObjectModel;
 
 namespace SuperPostDroidPunk.Models
 {
@@ -10,10 +9,10 @@ namespace SuperPostDroidPunk.Models
 
         public Response()
         {
-            Headers = new List<Param>();
-            Params = new List<Param>();
-            FormData = new List<Param>();
-            FormUrlEncoded = new List<Param>();
+            Headers = new ObservableCollection<Param>();
+            Params = new ObservableCollection<Param>();
+            FormData = new ObservableCollection<Param>();
+            FormUrlEncoded = new ObservableCollection<Param>();
         }
 
         public int Id { get; set; }
@@ -43,15 +42,15 @@ namespace SuperPostDroidPunk.Models
 
         public string AuthBearerToken { get; set; }
 
-        public List<Param> Headers { get; set; }
+        public ObservableCollection<Param> Headers { get; set; }
 
-        public List<Param> Params { get; set; }
+        public ObservableCollection<Param> Params { get; set; }
 
         public Core.BodyType RequestBodyType { get; set; }
 
-        public List<Param> FormData { get; set; }
+        public ObservableCollection<Param> FormData { get; set; }
 
-        public List<Param> FormUrlEncoded { get; set; }
+        public ObservableCollection<Param> FormUrlEncoded { get; set; }
 
         public string RequestRawBody { get; set; }
 
