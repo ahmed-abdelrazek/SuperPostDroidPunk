@@ -9,10 +9,6 @@
         Icon="/Assets/SuperPostDroidPunk-icon.ico"
         Title="SuperPostDroidPunk">
 
-  <Design.DataContext>
-    <vm:MainWindowViewModel/>
-  </Design.DataContext>
-
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10*" MinWidth="50"/>
@@ -304,14 +300,6 @@
 
         </TabItem>
       </TabControl>
-    </Grid>
-
-    <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.ColumnSpan="10" Margin="20" IsVisible="{Binding IsNotificationVisible}">
-      <Rectangle Fill="{DynamicResource NotificationCardBackgroundBrush}"
-                   Height="60"
-                   Stroke="{Binding NotificationBrush}" StrokeThickness="5"
-                   VerticalAlignment="Top" Width="250"/>
-      <TextBlock Text="{Binding NotificationMessage, Mode=TwoWay}" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Grid>
 
   </Grid>

@@ -1,4 +1,4 @@
-﻿using Avalonia.Media;
+﻿using Avalonia.Controls.Notifications;
 using DynamicData;
 using Flurl;
 using LiteDB;
@@ -12,12 +12,12 @@ using SuperPostDroidPunk.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reactive;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SuperPostDroidPunk.ViewModels
@@ -50,15 +50,15 @@ namespace SuperPostDroidPunk.ViewModels
         private ObservableCollection<Response> _history;
         private ObservableCollection<ResponsesList> _historyCollection;
         private Response _selectedHistory;
-        private bool _isNotificationVisible;
-        private SolidColorBrush _notificationBrush;
-        private string _notificationMessage;
+        private IManagedNotificationManager _notificationManager;
         private ObservableCollection<CollectionNodeViewModel> _tree;
 
         public ObservableCollection<string> HttpMethods { get; set; }
 
         public string SelectedMethod { get => _selectedMethod; set => this.RaiseAndSetIfChanged(ref _selectedMethod, value); }
 
+        [Required(AllowEmptyStrings = false)]
+        [RegularExpression(@"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$", ErrorMessage = "Please enter a valid URL.")]
         public string Url { get => _url; set => this.RaiseAndSetIfChanged(ref _url, value); }
 
         public ObservableCollection<Param> Headers { get => _headers; set => this.RaiseAndSetIfChanged(ref _headers, value); }
@@ -148,26 +148,11 @@ namespace SuperPostDroidPunk.ViewModels
             }
         }
 
-        public bool IsNotificationVisible
+        public IManagedNotificationManager NotificationManager
         {
-            get => _isNotificationVisible;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _isNotificationVisible, value);
-                if (_isNotificationVisible)
-                {
-                    new Thread(() =>
-                    {
-                        Thread.Sleep(5000);
-                        IsNotificationVisible = false;
-                    }).Start();
-                }
-            }
+            get { return _notificationManager; }
+            set { this.RaiseAndSetIfChanged(ref _notificationManager, value); }
         }
-
-        public SolidColorBrush NotificationBrush { get => _notificationBrush; set => this.RaiseAndSetIfChanged(ref _notificationBrush, value); }
-
-        public string NotificationMessage { get => _notificationMessage; set => this.RaiseAndSetIfChanged(ref _notificationMessage, value); }
 
         public ReactiveCommand<Unit, Unit> SaveModifiedResponses { get; }
         public ReactiveCommand<Unit, Unit> CopyResponseToCollection { get; }
@@ -175,8 +160,7 @@ namespace SuperPostDroidPunk.ViewModels
         public ReactiveCommand<string, Unit> SendRequest { get; }
         public ReactiveCommand<Unit, Unit> AddNewParam { get; }
 
-
-        public MainWindowViewModel()
+        public MainWindowViewModel(IManagedNotificationManager notificationManager)
         {
             Headers = new ObservableCollection<Param>();
             Params = new ObservableCollection<Param>
@@ -193,6 +177,8 @@ namespace SuperPostDroidPunk.ViewModels
 
             SendRequest = ReactiveCommand.Create<string>(DoSendRequest);
             AddNewParam = ReactiveCommand.Create(DoAddNewParam);
+
+            _notificationManager = notificationManager;
         }
 
         async Task LoadAsync()
@@ -367,8 +353,7 @@ namespace SuperPostDroidPunk.ViewModels
                     isErrorInRequestExist = true;
                     ResponseBodyRaw = ex.Message;
 
-                    NotificationBrush = new SolidColorBrush(Color.Parse("#BD202C"), 0.75);
-                    NotificationMessage = "Errors with Request see Raw.";
+                    NotificationManager.Show(new Avalonia.Controls.Notifications.Notification("Error", "There is a problem with your request, please check out Raw tab.", NotificationType.Error));
                 }
 
                 // Try to format the response as Json
@@ -427,24 +412,19 @@ namespace SuperPostDroidPunk.ViewModels
                     {
                         if (isErrorInResponseExist)
                         {
-                            NotificationBrush = new SolidColorBrush(Color.Parse("#FDB328"), 0.75);
-                            NotificationMessage = "Sent But with errors see Raw.";
+                            NotificationManager.Show(new Avalonia.Controls.Notifications.Notification("Warning", "Sent the request but there are some errors.", NotificationType.Warning));
                         }
                         else
                         {
-                            NotificationBrush = new SolidColorBrush(Color.Parse("#1F9E45"), 0.75);
-                            NotificationMessage = "Sent and came home.";
+                            NotificationManager.Show(new Avalonia.Controls.Notifications.Notification("Done", "Sent a request and got a response back.", NotificationType.Success));
                         }
                     }
-                    IsNotificationVisible = true;
                     isSending = false;
                 }
             }
             else
             {
-                NotificationBrush = new SolidColorBrush(Color.Parse("#BD202C"), 0.75);
-                NotificationMessage = "Already sending or Url is empty/invalid.";
-                IsNotificationVisible = true;
+                NotificationManager.Show(new Avalonia.Controls.Notifications.Notification("Info", "Already sending a request or there a problem with your URL.", NotificationType.Information));
             }
         }
 
@@ -479,15 +459,12 @@ namespace SuperPostDroidPunk.ViewModels
                 {
                     if (isErrorInSaveHistoryExist)
                     {
-                        NotificationBrush = new SolidColorBrush(Color.Parse("#FDB328"), 0.75);
-                        NotificationMessage = "Saved Some but got error.";
+                        NotificationManager.Show(new Avalonia.Controls.Notifications.Notification("Warning", "Saved Some but can't save others so we got error.", NotificationType.Warning));
                     }
                     else
                     {
-                        NotificationBrush = new SolidColorBrush(Color.Parse("#1F9E45"), 0.75);
-                        NotificationMessage = "Saving Done.";
+                        NotificationManager.Show(new Avalonia.Controls.Notifications.Notification("Done", "Everything is saved now.", NotificationType.Success));
                     }
-                    IsNotificationVisible = true;
                     isSavingHistory = false;
                     isErrorInSaveHistoryExist = false;
                 }
@@ -535,15 +512,12 @@ namespace SuperPostDroidPunk.ViewModels
                 {
                     if (isErrorInDeleteHistoryExist)
                     {
-                        NotificationBrush = new SolidColorBrush(Color.Parse("#FDB328"), 0.75);
-                        NotificationMessage = "Deleted Some but got error.";
+                        NotificationManager.Show(new Avalonia.Controls.Notifications.Notification("Warning", "Delete Some but can't delete others so we got error.", NotificationType.Warning));
                     }
                     else
                     {
-                        NotificationBrush = new SolidColorBrush(Color.Parse("#1F9E45"), 0.75);
-                        NotificationMessage = "Deleteing Done.";
+                        NotificationManager.Show(new Avalonia.Controls.Notifications.Notification("Done", "Everything is deleted now.", NotificationType.Success));
                     }
-                    IsNotificationVisible = true;
                     isDeletingHistory = false;
                     isErrorInDeleteHistoryExist = false;
                 }
