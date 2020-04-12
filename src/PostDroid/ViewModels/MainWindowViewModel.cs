@@ -19,6 +19,7 @@ using System.Net.Http.Headers;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace SuperPostDroidPunk.ViewModels
 {
@@ -356,29 +357,52 @@ namespace SuperPostDroidPunk.ViewModels
                     NotificationManager.Show(new Avalonia.Controls.Notifications.Notification("Error", "There is a problem with your request, please check out Raw tab.", NotificationType.Error));
                 }
 
-                // Try to format the response as Json
-                try
+                await Task.Run(() =>
                 {
-                    ResponseBodyJson = JToken.Parse(responseBody).ToString(Formatting.Indented);
-                    newResponse.Json = ResponseBodyJson;
-                }
-                catch (Exception ex)
-                {
-                    ResponseBodyJson = $"Please look at Raw. {Environment.NewLine} {ex.Message}";
-                    isErrorInResponseExist = true;
-                }
+                    // Check if the response is json then Try to format it as one
+                    bool isValidJson = responseBody.IsValidJson(out JToken outJson);
+                    try
+                    {
+                        if (isValidJson)
+                        {
+                            ResponseBodyJson = outJson.ToString(Newtonsoft.Json.Formatting.Indented);
+                            newResponse.Json = ResponseBodyJson;
+                        }
+                        else
+                        {
+                            ResponseBodyJson = "No valid Json returned, check XML or Raw";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ResponseBodyJson = $"Please look at Raw. {Environment.NewLine} {ex.Message}";
+                        isErrorInResponseExist = true;
+                    }
 
-                // Try to format the response as XML
-                try
-                {
-                    ResponseBodyXml = XmlExtensions.DeserializeXmlNode(responseBody, "root", "array").AsString();
-                    newResponse.Xml = ResponseBodyXml;
-                }
-                catch (Exception ex)
-                {
-                    ResponseBodyXml = $"Please look at Raw. {Environment.NewLine} {ex.Message}";
-                    isErrorInResponseExist = true;
-                }
+                    // check if the response is xml or get it from json then Try to format it as XML
+                    try
+                    {
+                        if (responseBody.IsValidXML(out XmlDocument outXml))
+                        {
+                            ResponseBodyXml = outXml.AsString();
+                            newResponse.Xml = ResponseBodyXml;
+                        }
+                        else if (isValidJson)
+                        {
+                            ResponseBodyXml = XmlExtensions.DeserializeXmlNode(responseBody, "root", "array").AsString();
+                            newResponse.Xml = ResponseBodyXml;
+                        }
+                        else
+                        {
+                            ResponseBodyXml = "No valid Xml returned, check Json or Raw";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ResponseBodyXml = $"Please look at Raw. {Environment.NewLine} {ex.Message}";
+                        isErrorInResponseExist = true;
+                    }
+                });
 
                 // show response or error as is
                 try

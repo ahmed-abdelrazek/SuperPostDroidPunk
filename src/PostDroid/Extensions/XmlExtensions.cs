@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace SuperPostDroidPunk.Extensions
 {
@@ -36,11 +38,43 @@ namespace SuperPostDroidPunk.Extensions
         public static string AsString(this XmlDocument xmlDoc)
         {
             using StringWriter sw = new StringWriter();
-            using XmlTextWriter tx = new XmlTextWriter(sw);
-            tx.Formatting = System.Xml.Formatting.Indented;
+            using XmlTextWriter tx = new XmlTextWriter(sw)
+            {
+                Formatting = System.Xml.Formatting.Indented
+            };
             xmlDoc.WriteTo(tx);
             string strXmlText = sw.ToString();
             return strXmlText;
+        }
+
+        public static bool IsValidXML(this string rawString, out XmlDocument xmlDoc)
+        {
+            if (!string.IsNullOrWhiteSpace(rawString))
+            {
+                rawString = rawString.TrimStart();
+
+                if (rawString.StartsWith("<"))
+                {
+                    try
+                    {
+                        var xDoc = XDocument.Parse(rawString);
+                        xmlDoc = new XmlDocument();
+                        using (var xmlReader = xDoc.CreateReader())
+                        {
+                            xmlDoc.Load(xmlReader);
+                        }
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        xmlDoc = null;
+                        Console.WriteLine(ex);
+                        return false;
+                    }
+                }
+            }
+            xmlDoc = null;
+            return false;
         }
     }
 }
