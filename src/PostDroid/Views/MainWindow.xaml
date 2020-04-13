@@ -283,7 +283,7 @@
         <TabItem Header="Response">
           <TabControl>
             <TabItem Header="Json">
-              <TextBox AcceptsReturn="True" AcceptsTab="True" Text="{Binding ResponseBodyJson, Mode=TwoWay}" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
+              <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="True" Text="{Binding ResponseBodyJson, Mode=TwoWay}" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
             </TabItem>
             <TabItem Header="XML">
               <TextBox AcceptsReturn="True" AcceptsTab="True" IsReadOnly="True" Text="{Binding ResponseBodyXml, Mode=TwoWay}" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
