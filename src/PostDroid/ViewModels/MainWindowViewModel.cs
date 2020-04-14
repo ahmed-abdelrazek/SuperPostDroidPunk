@@ -34,6 +34,7 @@ namespace SuperPostDroidPunk.ViewModels
         private bool isErrorInResponseExist;
 
         private string _url;
+        private bool _isSaveInHistory;
         private string _selectedMethod;
         private string _responseBodyJson;
         private string _responseBodyXml;
@@ -59,8 +60,10 @@ namespace SuperPostDroidPunk.ViewModels
         public string SelectedMethod { get => _selectedMethod; set => this.RaiseAndSetIfChanged(ref _selectedMethod, value); }
 
         [Required(AllowEmptyStrings = false)]
-        [RegularExpression(@"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$", ErrorMessage = "Please enter a valid URL.")]
+        [RegularExpression(@"^http(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$", ErrorMessage = "Please enter a valid URL.")]
         public string Url { get => _url; set => this.RaiseAndSetIfChanged(ref _url, value); }
+
+        public bool IsSaveInHistory { get => _isSaveInHistory; set => this.RaiseAndSetIfChanged(ref _isSaveInHistory, value); }
 
         public ObservableCollection<Param> Headers { get => _headers; set => this.RaiseAndSetIfChanged(ref _headers, value); }
 
@@ -145,6 +148,7 @@ namespace SuperPostDroidPunk.ViewModels
                     ResponseBodyXml = _selectedHistory.Xml;
                     ResponseBodyRaw = _selectedHistory.Raw;
                     Url = _selectedHistory.Url;
+                    IsSaveInHistory = false;
                 }
             }
         }
@@ -419,12 +423,15 @@ namespace SuperPostDroidPunk.ViewModels
                 // Insert the new request into the database and the history list
                 try
                 {
-                    using var db = new LiteDatabase(DbConfig.ConnectionString);
-                    var col = db.GetCollection<Response>(DbConfig.ResponseCollection);
-                    newResponse.ModifiedAt = DateTime.Now;
-                    col.Insert(newResponse);
+                    if (IsSaveInHistory)
+                    {
+                        using var db = new LiteDatabase(DbConfig.ConnectionString);
+                        var col = db.GetCollection<Response>(DbConfig.ResponseCollection);
+                        newResponse.ModifiedAt = DateTime.Now;
+                        col.Insert(newResponse);
 
-                    History.Add(newResponse);
+                        History.Add(newResponse);
+                    }
                 }
                 catch (Exception ex)
                 {

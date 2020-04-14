@@ -198,24 +198,27 @@
         <ComboBox Grid.Column="1" VerticalAlignment="Center" Margin="0,5" Items="{Binding HttpMethods}" SelectedItem="{Binding SelectedMethod}"/>
         <TextBlock Text="Url" Grid.Column="2" VerticalAlignment="Center" Margin="5,5,2,5"/>
         <TextBox Name="UrlTextBox" VerticalAlignment="Center" Text="{Binding Url}" Watermark="API Url" Grid.Column="3" Margin="0,5" AcceptsReturn="False"/>
-        <Button Name="SendButton" MaxHeight="32" Cursor="Hand" VerticalAlignment="Center" Grid.Column="4" Margin="5" CommandParameter="{Binding #UrlTextBox.Text}">
-          <Canvas Width="20" Height="20">
-            <Path Fill="{DynamicResource NotificationCardWarningBackgroundBrush}" Data="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
-          </Canvas>
-          <Button.Styles>
-            <Style Selector="Button">
-              <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
-              <Setter Property="BorderThickness" Value="1"/>
-              <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardWarningBackgroundBrush}"/>
-            </Style>
-            <Style Selector="Button:pointerover /template/ ContentPresenter">
-              <Setter Property="Width" Value="35"/>
-            </Style>
-            <Style Selector="Button:pressed  /template/ ContentPresenter">
-              <Setter Property="Width" Value="30"/>
-            </Style>
-          </Button.Styles>
-        </Button>
+        <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="5">
+          <CheckBox Content="Save In History" Margin="0,0,5,0" IsChecked="{Binding IsSaveInHistory}"/>
+          <Button Name="SendButton" MaxHeight="32" Cursor="Hand" VerticalAlignment="Center" CommandParameter="{Binding #UrlTextBox.Text}">
+            <Canvas Width="20" Height="20">
+              <Path Fill="{DynamicResource NotificationCardWarningBackgroundBrush}" Data="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+            </Canvas>
+            <Button.Styles>
+              <Style Selector="Button">
+                <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource NotificationCardWarningBackgroundBrush}"/>
+              </Style>
+              <Style Selector="Button:pointerover /template/ ContentPresenter">
+                <Setter Property="Width" Value="35"/>
+              </Style>
+              <Style Selector="Button:pressed  /template/ ContentPresenter">
+                <Setter Property="Width" Value="30"/>
+              </Style>
+            </Button.Styles>
+          </Button>
+        </StackPanel>
       </Grid>
 
       <TabControl Grid.Row="1" Grid.Column="2" Margin="5" MaxHeight="300" VerticalAlignment="Top">
