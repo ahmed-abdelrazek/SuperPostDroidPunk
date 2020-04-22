@@ -10,6 +10,9 @@ I was going to name it PostDroid you know because the future is for machines but
 	2- Avalonia https://github.com/AvaloniaUI/Avalonia
 	3- Flurl https://github.com/tmenier/Flurl
 	4- Newtonsoft.Json https://github.com/JamesNK/Newtonsoft.Json
+
+## Credits
+the original Icons was made by Freepik https://www.flaticon.com/free-icon/postman_320339 and Flat Icons https://www.flaticon.com/free-icon/artificial-intelligence_2036901
   
 ## Screenshots
 
