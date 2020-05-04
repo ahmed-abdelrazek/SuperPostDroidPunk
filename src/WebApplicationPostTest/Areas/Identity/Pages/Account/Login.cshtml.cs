@@ -89,7 +89,7 @@ namespace WebApplicationPostTest.Areas.Identity.Pages.Account
             else
             {
                 //validate Username format
-                string emailRegex = @"/^[a-zA-Z0-9]+([a-zA-Z0-9](_|-| )[a-zA-Z0-9])*[a-zA-Z0-9]+$/";
+                string emailRegex = @"^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$";
                 Regex re = new Regex(emailRegex);
                 if (!re.IsMatch(Input.Email))
                 {

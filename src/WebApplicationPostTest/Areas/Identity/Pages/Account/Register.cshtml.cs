@@ -51,7 +51,7 @@ namespace WebApplicationPostTest.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [RegularExpression("/^[a-zA-Z0-9]+([a-zA-Z0-9](_|-| )[a-zA-Z0-9])*[a-zA-Z0-9]+$/", ErrorMessage = ("Username must be a-z 0_9 "))]
+            [RegularExpression("^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$", ErrorMessage = ("Username must be a-z 0_9 "))]
             [Display(Name = "Username")]
             public string Username { get; set; }
 
