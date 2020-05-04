@@ -8,6 +8,8 @@
     <ApplicationIcon>Assets\SuperPostDroidPunk-icon.ico</ApplicationIcon>
     <Description>Postman alternative oldman the future is for superhumans droids and cyper bots.</Description>
     <Company>ShababConquer</Company>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.xaml.cs">
