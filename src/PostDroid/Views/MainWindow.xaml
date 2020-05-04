@@ -197,7 +197,7 @@
         <TextBlock Text="Method" VerticalAlignment="Center" Margin="5,5,2,5"/>
         <ComboBox Grid.Column="1" VerticalAlignment="Center" Margin="0,5" Items="{Binding HttpMethods}" SelectedItem="{Binding SelectedMethod}"/>
         <TextBlock Text="Url" Grid.Column="2" VerticalAlignment="Center" Margin="5,5,2,5"/>
-        <TextBox Name="UrlTextBox" VerticalAlignment="Center" Text="{Binding Url}" Watermark="API Url" Grid.Column="3" Margin="0,5" AcceptsReturn="False"/>
+        <TextBox Name="UrlTextBox" VerticalAlignment="Center" Text="{Binding Url}" Watermark="API Url" Grid.Column="3" Margin="0,5" AcceptsReturn="False" AcceptsTab="False"/>
         <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="5">
           <CheckBox Content="Save In History" Margin="0,0,5,0" IsChecked="{Binding IsSaveInHistory}"/>
           <Button Name="SendButton" MaxHeight="32" Cursor="Hand" VerticalAlignment="Center" CommandParameter="{Binding #UrlTextBox.Text}">

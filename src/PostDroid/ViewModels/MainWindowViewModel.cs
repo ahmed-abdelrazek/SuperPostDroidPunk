@@ -16,6 +16,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
@@ -253,6 +254,11 @@ namespace SuperPostDroidPunk.ViewModels
                 ResponseBodyJson = ResponseBodyXml = ResponseBodyRaw = string.Empty;
 
                 HttpClient client = new HttpClient();
+                client.DefaultRequestHeaders.Clear();
+                //todo until the headers works
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
+                client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
+                client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "SuperPostDroidPunk App");
 
                 var newResponse = new Response
                 {
@@ -303,12 +309,8 @@ namespace SuperPostDroidPunk.ViewModels
                     newResponse.RequestBodyType = BodyType.Json;
                     newResponse.RequestRawBody = RequestBody;
 
-                    // Serialize the body into a JSON String
-                    var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(RequestBody));
-
-                    var jsonString = "json=" + System.Web.HttpUtility.UrlEncode(stringPayload);
-                    // Wrap our JSON inside a StringContent which then can be used by the HttpClient class to be send with Post, Put or Patch
-                    httpContent = new StringContent(jsonString, Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);
+                    // Wrap our JSON Body inside a StringContent which then can be used by the HttpClient class to be send with Post, Put or Patch
+                    httpContent = new StringContent(RequestBody, Encoding.UTF8, MediaTypeNames.Application.Json);
                 }
 
                 string responseBody = string.Empty;
