@@ -200,6 +200,7 @@
         <TextBox Name="UrlTextBox" VerticalAlignment="Center" Text="{Binding Url}" Watermark="API Url" Grid.Column="3" Margin="0,5" AcceptsReturn="False" AcceptsTab="False"/>
         <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="5">
           <CheckBox Content="Save In History" Margin="0,0,5,0" IsChecked="{Binding IsSaveInHistory}"/>
+          <TextBlock Text="{Binding StatusCode}" Margin="0,0,5,0" VerticalAlignment="Center" IsVisible="{Binding IsStatusCodeVisible}"/>
           <Button Name="SendButton" MaxHeight="32" Cursor="Hand" VerticalAlignment="Center" CommandParameter="{Binding #UrlTextBox.Text}">
             <Canvas Width="20" Height="20">
               <Path Fill="{DynamicResource NotificationCardWarningBackgroundBrush}" Data="M2,21L23,12L2,3V10L17,12L2,14V21Z" />

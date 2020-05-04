@@ -36,6 +36,8 @@ namespace SuperPostDroidPunk.ViewModels
 
         private string _url;
         private bool _isSaveInHistory;
+        private string _statusCode;
+        private bool _isStatusCodeVisible;
         private string _selectedMethod;
         private string _responseBodyJson;
         private string _responseBodyXml;
@@ -65,6 +67,10 @@ namespace SuperPostDroidPunk.ViewModels
         public string Url { get => _url; set => this.RaiseAndSetIfChanged(ref _url, value); }
 
         public bool IsSaveInHistory { get => _isSaveInHistory; set => this.RaiseAndSetIfChanged(ref _isSaveInHistory, value); }
+
+        public string StatusCode { get => _statusCode; set => this.RaiseAndSetIfChanged(ref _statusCode, value); }
+
+        public bool IsStatusCodeVisible { get => _isStatusCodeVisible; set => this.RaiseAndSetIfChanged(ref _isStatusCodeVisible, value); }
 
         public ObservableCollection<Param> Headers { get => _headers; set => this.RaiseAndSetIfChanged(ref _headers, value); }
 
@@ -134,6 +140,9 @@ namespace SuperPostDroidPunk.ViewModels
                 if (_selectedHistory != value)
                 {
                     this.RaiseAndSetIfChanged(ref _selectedHistory, value);
+
+                    StatusCode = string.Empty;
+                    IsStatusCodeVisible = false;
 
                     if (_selectedHistory != null)
                     {
@@ -214,21 +223,6 @@ namespace SuperPostDroidPunk.ViewModels
                 {
                     History = new ObservableCollection<Response>(db.GetCollection<Response>(DbConfig.ResponseCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
                     HistoryCollection = new ObservableCollection<ResponsesList>(db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).Find(x => x.ParentId == 0).OrderByDescending(x => x.ModifiedAt));
-                    //db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).
-                    //Insert(new ResponsesList
-                    //{
-                    //    Name = "Root Node",
-                    //    CreateAt = DateTime.Now,
-                    //    Responses = new ObservableCollection<Response>
-                    //    {
-                    //        new Response
-                    //        {
-                    //            Url = "fdsfsd.com",
-                    //            HttpMethod = "Get",
-                    //            CreateAt = DateTime.Now
-                    //        }
-                    //    }
-                    //});
                 }
 
                 Tree = new ObservableCollection<CollectionNodeViewModel>();
@@ -257,7 +251,7 @@ namespace SuperPostDroidPunk.ViewModels
                 client.DefaultRequestHeaders.Clear();
                 //todo until the headers works
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeNames.Application.Json));
-                client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
+                client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", MediaTypeNames.Application.Json);
                 client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "SuperPostDroidPunk App");
 
                 var newResponse = new Response
@@ -323,6 +317,8 @@ namespace SuperPostDroidPunk.ViewModels
                         case "Get":
                             {
                                 HttpResponseMessage response = await client.GetAsync(url);
+                                StatusCode = $"{response.StatusCode} ({(int)response.StatusCode})";
+                                IsStatusCodeVisible = true;
                                 response.EnsureSuccessStatusCode();
                                 responseBody = await response.Content.ReadAsStringAsync();
                                 break;
@@ -330,6 +326,8 @@ namespace SuperPostDroidPunk.ViewModels
                         case "Post":
                             {
                                 HttpResponseMessage response = await client.PostAsync(url, httpContent);
+                                StatusCode = $"{response.StatusCode} ({(int)response.StatusCode})";
+                                IsStatusCodeVisible = true;
                                 response.EnsureSuccessStatusCode();
                                 responseBody = await response.Content.ReadAsStringAsync();
                                 break;
@@ -337,6 +335,8 @@ namespace SuperPostDroidPunk.ViewModels
                         case "Put":
                             {
                                 HttpResponseMessage response = await client.PutAsync(url, httpContent);
+                                StatusCode = $"{response.StatusCode} ({(int)response.StatusCode})";
+                                IsStatusCodeVisible = true;
                                 response.EnsureSuccessStatusCode();
                                 responseBody = await response.Content.ReadAsStringAsync();
                                 break;
@@ -344,6 +344,8 @@ namespace SuperPostDroidPunk.ViewModels
                         case "Delete":
                             {
                                 HttpResponseMessage response = await client.DeleteAsync(url);
+                                StatusCode = $"{response.StatusCode} ({(int)response.StatusCode})";
+                                IsStatusCodeVisible = true;
                                 response.EnsureSuccessStatusCode();
                                 responseBody = await response.Content.ReadAsStringAsync();
                                 break;
@@ -351,6 +353,8 @@ namespace SuperPostDroidPunk.ViewModels
                         case "PATCH":
                             {
                                 HttpResponseMessage response = await client.PatchAsync(url, httpContent);
+                                StatusCode = $"{response.StatusCode} ({(int)response.StatusCode})";
+                                IsStatusCodeVisible = true;
                                 response.EnsureSuccessStatusCode();
                                 responseBody = await response.Content.ReadAsStringAsync();
                                 break;
