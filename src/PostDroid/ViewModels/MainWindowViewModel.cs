@@ -133,22 +133,26 @@ namespace SuperPostDroidPunk.ViewModels
                 if (_selectedHistory != value)
                 {
                     this.RaiseAndSetIfChanged(ref _selectedHistory, value);
-                    SelectedMethod = _selectedHistory.HttpMethod;
-                    Params = new ObservableCollection<Param>();
-                    foreach (var item in _selectedHistory.Params)
+
+                    if (_selectedHistory != null)
                     {
-                        Params.Add(item);
+                        SelectedMethod = _selectedHistory.HttpMethod;
+                        Params = new ObservableCollection<Param>();
+                        foreach (var item in _selectedHistory.Params)
+                        {
+                            Params.Add(item);
+                        }
+                        SelectedAuthType = _selectedHistory.AuthorizationType;
+                        AuthUsername = _selectedHistory.AuthUserName;
+                        AuthPassword = _selectedHistory.AuthPassword;
+                        AuthBearer = _selectedHistory.AuthBearerToken;
+                        RequestBody = _selectedHistory.RequestRawBody;
+                        ResponseBodyJson = _selectedHistory.Json;
+                        ResponseBodyXml = _selectedHistory.Xml;
+                        ResponseBodyRaw = _selectedHistory.Raw;
+                        Url = _selectedHistory.Url;
+                        IsSaveInHistory = false;
                     }
-                    SelectedAuthType = _selectedHistory.AuthorizationType;
-                    AuthUsername = _selectedHistory.AuthUserName;
-                    AuthPassword = _selectedHistory.AuthPassword;
-                    AuthBearer = _selectedHistory.AuthBearerToken;
-                    RequestBody = _selectedHistory.RequestRawBody;
-                    ResponseBodyJson = _selectedHistory.Json;
-                    ResponseBodyXml = _selectedHistory.Xml;
-                    ResponseBodyRaw = _selectedHistory.Raw;
-                    Url = _selectedHistory.Url;
-                    IsSaveInHistory = false;
                 }
             }
         }
@@ -301,8 +305,10 @@ namespace SuperPostDroidPunk.ViewModels
 
                     // Serialize the body into a JSON String
                     var stringPayload = await Task.Run(() => JsonConvert.SerializeObject(RequestBody));
+
+                    var jsonString = "json=" + System.Web.HttpUtility.UrlEncode(stringPayload);
                     // Wrap our JSON inside a StringContent which then can be used by the HttpClient class to be send with Post, Put or Patch
-                    httpContent = new StringContent(stringPayload, Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);
+                    httpContent = new StringContent(jsonString, Encoding.UTF8, System.Net.Mime.MediaTypeNames.Application.Json);
                 }
 
                 string responseBody = string.Empty;
@@ -368,72 +374,74 @@ namespace SuperPostDroidPunk.ViewModels
                                 break;
                             }
                     }
+
+                    await Task.Run(() =>
+                    {
+                        // Check if the response is json then Try to format it as one
+                        bool isValidJson = responseBody.IsValidJson(out JToken outJson);
+                        try
+                        {
+                            if (isValidJson)
+                            {
+                                ResponseBodyJson = outJson.ToString(Newtonsoft.Json.Formatting.Indented);
+                                newResponse.Json = ResponseBodyJson;
+                            }
+                            else
+                            {
+                                ResponseBodyJson = "No valid Json returned, check XML or Raw";
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ResponseBodyJson = $"Please look at Raw. {Environment.NewLine} {ex.Message}";
+                            isErrorInResponseExist = true;
+                        }
+
+                        // check if the response is xml or get it from json then Try to format it as XML
+                        try
+                        {
+                            if (responseBody.IsValidXML(out XmlDocument outXml))
+                            {
+                                ResponseBodyXml = outXml.AsString();
+                                newResponse.Xml = ResponseBodyXml;
+                            }
+                            else if (isValidJson)
+                            {
+                                ResponseBodyXml = XmlExtensions.DeserializeXmlNode(responseBody, "root", "array").AsString();
+                                newResponse.Xml = ResponseBodyXml;
+                            }
+                            else
+                            {
+                                ResponseBodyXml = "No valid Xml returned, check Json or Raw";
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ResponseBodyXml = $"Please look at Raw. {Environment.NewLine} {ex.Message}";
+                            isErrorInResponseExist = true;
+                        }
+                    });
+
+                    // show response or error as is
+                    try
+                    {
+                        ResponseBodyRaw = responseBody;
+                        newResponse.Raw = ResponseBodyRaw;
+                    }
+                    catch (Exception ex)
+                    {
+                        ResponseBodyXml = $"There is a problem with your request. {Environment.NewLine} {ex.Message}";
+                        isErrorInResponseExist = true;
+                    }
+
                 }
                 catch (Exception ex)
                 {
                     isErrorInRequestExist = true;
+                    Console.WriteLine(ex);
                     ResponseBodyRaw = ex.Message;
 
                     NotificationManager.Show(new Avalonia.Controls.Notifications.Notification("Error", "There is a problem with your request, please check out Raw tab.", NotificationType.Error));
-                }
-
-                await Task.Run(() =>
-                {
-                    // Check if the response is json then Try to format it as one
-                    bool isValidJson = responseBody.IsValidJson(out JToken outJson);
-                    try
-                    {
-                        if (isValidJson)
-                        {
-                            ResponseBodyJson = outJson.ToString(Newtonsoft.Json.Formatting.Indented);
-                            newResponse.Json = ResponseBodyJson;
-                        }
-                        else
-                        {
-                            ResponseBodyJson = "No valid Json returned, check XML or Raw";
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ResponseBodyJson = $"Please look at Raw. {Environment.NewLine} {ex.Message}";
-                        isErrorInResponseExist = true;
-                    }
-
-                    // check if the response is xml or get it from json then Try to format it as XML
-                    try
-                    {
-                        if (responseBody.IsValidXML(out XmlDocument outXml))
-                        {
-                            ResponseBodyXml = outXml.AsString();
-                            newResponse.Xml = ResponseBodyXml;
-                        }
-                        else if (isValidJson)
-                        {
-                            ResponseBodyXml = XmlExtensions.DeserializeXmlNode(responseBody, "root", "array").AsString();
-                            newResponse.Xml = ResponseBodyXml;
-                        }
-                        else
-                        {
-                            ResponseBodyXml = "No valid Xml returned, check Json or Raw";
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ResponseBodyXml = $"Please look at Raw. {Environment.NewLine} {ex.Message}";
-                        isErrorInResponseExist = true;
-                    }
-                });
-
-                // show response or error as is
-                try
-                {
-                    ResponseBodyRaw = responseBody;
-                    newResponse.Raw = ResponseBodyRaw;
-                }
-                catch (Exception ex)
-                {
-                    ResponseBodyXml = $"There is a problem with your request. {Environment.NewLine} {ex.Message}";
-                    isErrorInResponseExist = true;
                 }
 
                 // Insert the new request into the database and the history list
