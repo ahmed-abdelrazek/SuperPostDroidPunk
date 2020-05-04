@@ -13,7 +13,8 @@ namespace WebApplicationPostTest.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: true)
+                    UserId = table.Column<string>(nullable: true),
+                    IsComplete = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

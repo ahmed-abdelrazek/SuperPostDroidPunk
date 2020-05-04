@@ -5,12 +5,20 @@
     <UserSecretsId>aspnet-WebApplicationPostTest-4E6BB37A-B46E-4CE4-AA53-CA59686C8DB7</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20200504210904_AddTodo.cs" />
+    <Compile Remove="Data\Migrations\20200504210904_AddTodo.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200504211249_AddTodo.cs" />
+    <Compile Remove="Data\Migrations\20200504211249_AddTodo.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3">
       <PrivateAssets>all</PrivateAssets>

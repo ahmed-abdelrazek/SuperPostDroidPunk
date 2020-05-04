@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplicationPostTest.Models
 {
@@ -11,6 +10,8 @@ namespace WebApplicationPostTest.Models
         public string Name { get; set; }
 
         public string UserId { get; set; }
+
+        public bool IsComplete { get; set; }
 
         public virtual ApplicationUser User { get; set; }
     }
