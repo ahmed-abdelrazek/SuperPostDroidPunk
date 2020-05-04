@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using WebApplicationPostTest.Data;
+using WebApplicationPostTest.Models;
 
 namespace WebApplicationPostTest
 {
@@ -29,7 +30,7 @@ namespace WebApplicationPostTest
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -100,10 +101,6 @@ namespace WebApplicationPostTest
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                       name: "api",
-                       pattern: "APIs/{controller}/{action=Index}/{id?}");
-
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

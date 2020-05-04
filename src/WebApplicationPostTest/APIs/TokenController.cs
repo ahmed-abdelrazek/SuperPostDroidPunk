@@ -23,14 +23,14 @@ namespace WebApplicationPostTest.APIs
     public class TokenController : ControllerBase
     {
         public IConfiguration Configuration { get; }
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<UserAuthenticateModel> _logger;
 
         public TokenController(IConfiguration configuration,
-            SignInManager<IdentityUser> signInManager,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<UserAuthenticateModel> logger,
-            UserManager<IdentityUser> userManager)
+            UserManager<ApplicationUser> userManager)
         {
             Configuration = configuration;
             _userManager = userManager;
@@ -89,7 +89,7 @@ namespace WebApplicationPostTest.APIs
             return ValidationProblem();
         }
 
-        private async Task<TokenModel> GenerateJwtToken(IdentityUser user)
+        private async Task<TokenModel> GenerateJwtToken(ApplicationUser user)
         {
             TokenModel tm = new TokenModel();
 
