@@ -16,9 +16,19 @@ the original Icons was made by Freepik https://www.flaticon.com/free-icon/postma
   
 ## Screenshots
 
-![Alt text](Images/Annotation2020-04-01093559.png "Main Screen")
+<p align="center">
+    <img src="PostDroidIcon.svg" width="200">
+</p>
 
-![Alt text](Images/Annotation2020-04-01093641.png "Main Screen Auth")
+![Alt text](Images/Annotation-2020-05-05-000813.png "Main Screen")
+
+![Alt text](Images/Annotation-2020-05-05-000900.png "Toast Notification")
+
+![Alt text](Images/Annotation-2020-05-05-000912.png "Raw Content")
+
+![Alt text](Images/Annotation-2020-05-05-000919.png "Authorization Types")
+
+![Alt text](Images/Annotation-2020-05-05-000943.png "Request Body")
 
 ## Notes
 
