@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -90,6 +91,8 @@ namespace WebApplicationPostTest.APIs
 
         private async Task<TokenModel> GenerateJwtToken(IdentityUser user)
         {
+            TokenModel tm = new TokenModel();
+
             await Task.Run(() =>
             {
                 var claims = new[]
@@ -112,18 +115,20 @@ namespace WebApplicationPostTest.APIs
                     signingCredentials: creds
                 );
 
-                return new TokenModel
+                var usDtfi = new CultureInfo("en-GB", false);
+
+                tm = new TokenModel
                 {
                     AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                     TokenType = "bearer",
                     Expirein = (expires - utcNow).TotalMilliseconds.ToString(),
                     UserName = user.UserName,
-                    Issued = utcNow.ToString("ddd, dd MMM yyy HH’:’mm’:’ss ‘GMT’"),
-                    Expires = expires.ToString("ddd, dd MMM yyy HH’:’mm’:’ss ‘GMT’")
+                    Issued = utcNow.ToString("ddd, dd MMM yyy HH:mm:ss", usDtfi) + " GMT",
+                    Expires = expires.ToString("ddd, dd MMM yyy HH:mm:ss", usDtfi) + " GMT"
                 };
             });
 
-            return null;
+            return tm;
         }
     }
 }
