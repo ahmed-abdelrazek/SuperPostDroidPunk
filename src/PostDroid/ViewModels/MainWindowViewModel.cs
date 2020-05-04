@@ -208,8 +208,24 @@ namespace SuperPostDroidPunk.ViewModels
                 using (var db = new LiteDatabase(DbConfig.ConnectionString))
                 {
                     History = new ObservableCollection<Response>(db.GetCollection<Response>(DbConfig.ResponseCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
-                    HistoryCollection = new ObservableCollection<ResponsesList>(db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).FindAll().OrderByDescending(x => x.ModifiedAt));
+                    HistoryCollection = new ObservableCollection<ResponsesList>(db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).Find(x => x.ParentId == 0).OrderByDescending(x => x.ModifiedAt));
+                    //db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).
+                    //Insert(new ResponsesList
+                    //{
+                    //    Name = "Root Node",
+                    //    CreateAt = DateTime.Now,
+                    //    Responses = new ObservableCollection<Response>
+                    //    {
+                    //        new Response
+                    //        {
+                    //            Url = "fdsfsd.com",
+                    //            HttpMethod = "Get",
+                    //            CreateAt = DateTime.Now
+                    //        }
+                    //    }
+                    //});
                 }
+
                 Tree = new ObservableCollection<CollectionNodeViewModel>();
 
                 foreach (var item in HistoryCollection)

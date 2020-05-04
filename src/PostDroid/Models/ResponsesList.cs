@@ -7,7 +7,6 @@ namespace SuperPostDroidPunk.Models
         public ResponsesList()
         {
             Responses = new ObservableCollection<Response>();
-            SubList = new ObservableCollection<ResponsesList>();
         }
 
         public int Id { get; set; }
@@ -16,7 +15,7 @@ namespace SuperPostDroidPunk.Models
 
         public virtual ObservableCollection<Response> Responses { get; set; }
 
-        public virtual ObservableCollection<ResponsesList> SubList { get; set; }
+        public int ParentId { get; set; }
 
         public string Notes { get; set; }
     }

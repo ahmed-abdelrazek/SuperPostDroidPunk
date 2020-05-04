@@ -5,7 +5,9 @@ using LiteDB;
 using ReactiveUI;
 using SuperPostDroidPunk.Core;
 using SuperPostDroidPunk.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace SuperPostDroidPunk.ViewModels
 {
@@ -22,6 +24,7 @@ namespace SuperPostDroidPunk.ViewModels
         private bool isExpanded;
         private bool isFolder;
         private bool isModified;
+        private bool isURLVisible;
         private ObservableCollection<CollectionNodeViewModel> children;
 
         public CollectionNodeViewModel()
@@ -42,7 +45,7 @@ namespace SuperPostDroidPunk.ViewModels
                 this.RaiseAndSetIfChanged(ref id, value);
                 if (id > 0)
                 {
-                    LoadChildNodes(id);
+                    LoadChildNodes();
                 }
             }
         }
@@ -113,46 +116,68 @@ namespace SuperPostDroidPunk.ViewModels
 
         public bool IsModified { get => isModified; set => this.RaiseAndSetIfChanged(ref isModified, value); }
 
+        public bool IsURLVisible { get => isURLVisible; set => this.RaiseAndSetIfChanged(ref isURLVisible, value); }
+
         public bool ChildrenLoaded { get; set; }
 
         public ObservableCollection<CollectionNodeViewModel> Children { get => children; set => this.RaiseAndSetIfChanged(ref children, value); }
 
-        public void LoadChildNodes(int id)
+        public void LoadChildNodes()
         {
             if (ChildrenLoaded) return;
 
-            using var db = new LiteDatabase(DbConfig.ConnectionString);
+            List<ResponsesList> newFolderChildren = null;
+            List<ResponsesList> newChildren = null;
 
-            var newChildren = db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).FindById(id);
+            using (var db = new LiteDatabase(DbConfig.ConnectionString))
+            {
+                newFolderChildren = db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).Find(x => x.ParentId == Id).OrderByDescending(x => x.ModifiedAt).ToList();
+                newChildren = db.GetCollection<ResponsesList>(DbConfig.HistoryCollection).Find(x => x.Id == Id).OrderByDescending(x => x.ModifiedAt).ToList();
+            }
 
             Children.Clear();
-            foreach (var folderChild in newChildren.SubList)
+            if (newFolderChildren != null)
             {
-                Children.Add(new CollectionNodeViewModel
+                foreach (var folderChild in newFolderChildren)
                 {
-                    Id = folderChild.Id,
-                    Name = folderChild.Name,
-                    Notes = folderChild.Notes,
-                    IsFolder = true,
-                    parentId = Id
-                });
-            }
+                    Children.Add(new CollectionNodeViewModel
+                    {
+                        Id = folderChild.Id,
+                        Name = folderChild.Name,
+                        Notes = folderChild.Notes,
+                        IsFolder = true,
+                        parentId = Id
+                    });
+                }
 
-            foreach (var ResponseChild in newChildren.Responses)
-            {
-                Children.Add(new CollectionNodeViewModel
+                foreach (var childResponses in newChildren)
                 {
-                    Id = ResponseChild.Id,
-                    Name = ResponseChild.Name,
-                    Method = ResponseChild.HttpMethod,
-                    url = ResponseChild.Url,
-                    Notes = ResponseChild.Notes,
-                    IsFolder = false,
-                    parentId = Id
-                });
-            }
+                    if (childResponses == null)
+                    {
+                        continue;
+                    }
+                    else if (childResponses.Responses == null)
+                    {
+                        continue;
+                    }
+                    foreach (var item in childResponses.Responses)
+                    {
+                        Children.Add(new CollectionNodeViewModel
+                        {
+                            Id = item.Id,
+                            Name = item.Name,
+                            Notes = item.Notes,
+                            IsFolder = false,
+                            parentId = Id,
+                            Url = $"{item.HttpMethod} - {item.Url}",
+                            isURLVisible = true
+                        });
+                    }
 
+                }
+            }
             ChildrenLoaded = true;
+            LoadChildNodes();
         }
     }
 }
