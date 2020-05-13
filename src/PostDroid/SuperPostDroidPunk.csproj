@@ -21,9 +21,9 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.9.9" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.9" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.9" />
+    <PackageReference Include="Avalonia" Version="0.9.10" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.10" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.10" />
     <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
     <PackageReference Include="Flurl" Version="2.8.2" />
     <PackageReference Include="LiteDB" Version="5.0.7" />
