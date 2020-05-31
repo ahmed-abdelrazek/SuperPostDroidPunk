@@ -261,7 +261,7 @@ namespace SuperPostDroidPunk.ViewModels
                 };
 
                 // Paramaters
-                if (Params.Count > 0)
+                if (Params.Count(x => x.IsSelected == true) > 0)
                 {
                     var headerParams = new Dictionary<string, string>();
                     ParamsListToDictionaryHelper.ListToDictionary(Params, headerParams);
