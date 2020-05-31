@@ -40,7 +40,7 @@ namespace WebApplicationPostTest.APIs
 
         [AllowAnonymous]
         [HttpPost("Auth")]
-        public async Task<IActionResult> Auth([FromBody]UserAuthenticateModel input)
+        public async Task<IActionResult> Auth([FromBody] UserAuthenticateModel input)
         {
             if (input.Email.IndexOf('@') > -1)
             {
@@ -100,7 +100,7 @@ namespace WebApplicationPostTest.APIs
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
-            };
+                };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtToken:SecretKey"]));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

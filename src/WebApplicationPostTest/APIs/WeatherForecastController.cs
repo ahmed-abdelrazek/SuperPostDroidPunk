@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,7 +14,7 @@ namespace WebApplicationPostTest.APIs
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
-           {
+        {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
@@ -45,10 +46,11 @@ namespace WebApplicationPostTest.APIs
         }
 
         // GET: api/WeatherForecast/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{id}", Name = "Get")]
         public string Get(int id)
         {
-            return "value";
+            return $"value {id}";
         }
 
         // POST: api/WeatherForecast
