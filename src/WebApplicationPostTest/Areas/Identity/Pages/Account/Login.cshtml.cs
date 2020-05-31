@@ -75,6 +75,7 @@ namespace WebApplicationPostTest.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
+            bool isEmail;
             if (Input.Email.IndexOf('@') > -1)
             {
                 //Validate email format
@@ -82,8 +83,13 @@ namespace WebApplicationPostTest.Areas.Identity.Pages.Account
                                        @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
                                           @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
                 Regex re = new Regex(emailRegex);
-                if (!re.IsMatch(Input.Email))
+                if (re.IsMatch(Input.Email))
                 {
+                    isEmail = true;
+                }
+                else
+                {
+                    isEmail = false;
                     ModelState.AddModelError("Email", "Email is not valid");
                 }
             }
@@ -96,19 +102,27 @@ namespace WebApplicationPostTest.Areas.Identity.Pages.Account
                 {
                     ModelState.AddModelError("Email", "Username is not valid");
                 }
+                isEmail = false;
             }
 
             if (ModelState.IsValid)
             {
-                if (Input.Email.IndexOf('@') > -1)
+                //if the user entered email go get their username to try and login
+                if (isEmail)
                 {
-                    Input.Email = await _userManager.Users.Where(r => r.Email == Input.Email)
-                        .Select(x => x.UserName).SingleOrDefaultAsync();
+                    var user = await _userManager.Users.SingleOrDefaultAsync(r => r.Email == Input.Email);
+                    if (user == null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
+                    }
+                    Input.Email = user.UserName;
                 }
 
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
