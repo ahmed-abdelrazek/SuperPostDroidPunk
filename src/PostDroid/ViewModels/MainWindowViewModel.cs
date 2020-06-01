@@ -460,7 +460,8 @@ namespace SuperPostDroidPunk.ViewModels
                         newResponse.ModifiedAt = DateTime.Now;
                         col.Insert(newResponse);
 
-                        History.Add(newResponse);
+                        // Add the new saved request to the top of the history list
+                        History.Insert(0, newResponse);
                     }
                 }
                 catch (Exception ex)
