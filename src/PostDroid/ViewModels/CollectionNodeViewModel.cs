@@ -124,10 +124,13 @@ namespace SuperPostDroidPunk.ViewModels
 
         public void LoadChildNodes()
         {
-            if (ChildrenLoaded) return;
+            if (ChildrenLoaded)
+            {
+                return;
+            }
 
-            List<ResponsesList> newFolderChildren = null;
-            List<ResponsesList> newChildren = null;
+            List<ResponsesList>? newFolderChildren = null;
+            List<ResponsesList>? newChildren = null;
 
             using (var db = new LiteDatabase(DbConfig.ConnectionString))
             {

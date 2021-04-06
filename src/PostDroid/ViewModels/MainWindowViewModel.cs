@@ -2,7 +2,6 @@
 using DynamicData;
 using Flurl;
 using LiteDB;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using SuperPostDroidPunk.Core;
@@ -38,7 +37,7 @@ namespace SuperPostDroidPunk.ViewModels
         private bool _isSaveInHistory;
         private string _statusCode;
         private bool _isStatusCodeVisible;
-        private string _selectedMethod;
+        private string? _selectedMethod;
         private string _responseBodyJson;
         private string _responseBodyXml;
         private string _responseBodyRaw;
@@ -60,7 +59,7 @@ namespace SuperPostDroidPunk.ViewModels
 
         public ObservableCollection<string> HttpMethods { get; set; }
 
-        public string SelectedMethod { get => _selectedMethod; set => this.RaiseAndSetIfChanged(ref _selectedMethod, value); }
+        public string? SelectedMethod { get => _selectedMethod; set => this.RaiseAndSetIfChanged(ref _selectedMethod, value); }
 
         [Required(AllowEmptyStrings = false)]
         [RegularExpression(@"^http(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$", ErrorMessage = "Please enter a valid URL.")]
@@ -394,7 +393,7 @@ namespace SuperPostDroidPunk.ViewModels
                             }
                             else
                             {
-                                ResponseBodyJson = "No valid Json returned, check XML or Raw";
+                                ResponseBodyJson = "No valid Json returned, check XML or Raw.";
                             }
                         }
                         catch (Exception ex)
@@ -406,14 +405,15 @@ namespace SuperPostDroidPunk.ViewModels
                         // check if the response is xml or get it from json then Try to format it as XML
                         try
                         {
-                            if (responseBody.IsValidXML(out XmlDocument outXml))
+                            if (responseBody.IsValidXML(out XmlDocument? outXml))
                             {
-                                ResponseBodyXml = outXml.AsString();
+                                ResponseBodyXml = outXml is null ? "" : outXml.AsString();
                                 newResponse.Xml = ResponseBodyXml;
                             }
                             else if (isValidJson)
                             {
-                                ResponseBodyXml = XmlExtensions.DeserializeXmlNode(responseBody, "root", "array").AsString();
+                                var xml = XmlExtensions.DeserializeXmlNode(responseBody, "root", "array");
+                                ResponseBodyXml = xml is null ? "" : xml.AsString();
                                 newResponse.Xml = ResponseBodyXml;
                             }
                             else

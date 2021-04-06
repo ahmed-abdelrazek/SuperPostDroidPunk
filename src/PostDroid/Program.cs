@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using Avalonia.Logging.Serilog;
 using Avalonia.ReactiveUI;
 
 namespace SuperPostDroidPunk
@@ -16,7 +15,7 @@ namespace SuperPostDroidPunk
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .LogToDebug()
+                .LogToTrace()
                 .UseReactiveUI();
     }
 }

@@ -11,8 +11,7 @@ namespace SuperPostDroidPunk.Extensions
             if (!string.IsNullOrWhiteSpace(rawString))
             {
                 rawString = rawString.Trim();
-                if ((rawString.StartsWith("{") && rawString.EndsWith("}")) ||
-                    (rawString.StartsWith("[") && rawString.EndsWith("]")))
+                if ((rawString.StartsWith("{") && rawString.EndsWith("}")) || (rawString.StartsWith("[") && rawString.EndsWith("]")))
                 {
                     try
                     {
@@ -21,20 +20,20 @@ namespace SuperPostDroidPunk.Extensions
                     }
                     catch (JsonReaderException jex)
                     {
-                        jToken = null;
+                        jToken = "";
                         //Exception in parsing json
                         Console.WriteLine(jex.Message);
                         return false;
                     }
                     catch (Exception ex) //some other exception
                     {
-                        jToken = null;
+                        jToken = "";
                         Console.WriteLine(ex);
                         return false;
                     }
                 }
             }
-            jToken = null;
+            jToken = "";
             return false;
         }
     }

@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Notifications;
 using Avalonia.Markup.Xaml;
@@ -9,7 +9,7 @@ namespace SuperPostDroidPunk
 {
     public class App : Application
     {
-        private WindowNotificationManager _notificationManager;
+        private WindowNotificationManager? _notificationManager;
 
         public override void Initialize()
         {
@@ -20,8 +20,6 @@ namespace SuperPostDroidPunk
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-
-
                 desktop.MainWindow = new MainWindow();
                 _notificationManager = new WindowNotificationManager(desktop.MainWindow);
                 desktop.MainWindow.DataContext = new MainWindowViewModel(_notificationManager);

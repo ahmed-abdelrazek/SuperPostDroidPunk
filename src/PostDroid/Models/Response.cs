@@ -30,7 +30,7 @@ namespace SuperPostDroidPunk.Models
             }
         }
 
-        public string HttpMethod { get; set; }
+        public string? HttpMethod { get; set; }
 
         public string Url { get; set; }
 

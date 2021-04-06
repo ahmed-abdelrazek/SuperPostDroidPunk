@@ -15,12 +15,12 @@ namespace SuperPostDroidPunk.Extensions
         /// <param name="rootName">XML root name</param>
         /// <param name="rootPropertyName">Xml root property Name</param>
         /// <returns>Xml Document</returns>
-        public static XmlDocument DeserializeXmlNode(string json, string rootName, string rootPropertyName)
+        public static XmlDocument? DeserializeXmlNode(string json, string rootName, string rootPropertyName)
         {
             return DeserializeXmlNode(new StringReader(json), rootName, rootPropertyName);
         }
 
-        public static XmlDocument DeserializeXmlNode(TextReader textReader, string rootName, string rootPropertyName)
+        public static XmlDocument? DeserializeXmlNode(TextReader textReader, string rootName, string rootPropertyName)
         {
             var prefix = "{" + JsonConvert.SerializeObject(rootPropertyName) + ":";
             var postfix = "}";
@@ -37,8 +37,8 @@ namespace SuperPostDroidPunk.Extensions
 
         public static string AsString(this XmlDocument xmlDoc)
         {
-            using StringWriter sw = new StringWriter();
-            using XmlTextWriter tx = new XmlTextWriter(sw)
+            using StringWriter sw = new();
+            using XmlTextWriter tx = new(sw)
             {
                 Formatting = System.Xml.Formatting.Indented
             };
@@ -47,7 +47,7 @@ namespace SuperPostDroidPunk.Extensions
             return strXmlText;
         }
 
-        public static bool IsValidXML(this string rawString, out XmlDocument xmlDoc)
+        public static bool IsValidXML(this string rawString, out XmlDocument? xmlDoc)
         {
             if (!string.IsNullOrWhiteSpace(rawString))
             {
