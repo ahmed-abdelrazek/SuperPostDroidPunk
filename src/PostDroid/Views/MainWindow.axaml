@@ -22,7 +22,7 @@
       <TabItem Header="History">
         <Grid RowDefinitions="auto,*">
           <WrapPanel Orientation="Horizontal">
-            <Button Cursor="Hand" MaxHeight="32" Command="{Binding SaveModifiedResponses}" Margin="5">
+            <Button Cursor="Hand" MaxHeight="32" Command="{Binding SaveModifiedResponses}" Margin="6">
               <Viewbox>
                 <Canvas Width="24" Height="24">
                   <Path Fill="{DynamicResource NotificationCardSuccessBackgroundBrush}" Data="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" />
@@ -42,7 +42,7 @@
                 </Style>
               </Button.Styles>
             </Button>
-            <Button Cursor="Hand" MaxHeight="32" Command="{Binding CopyResponseToCollection}" Margin="5">
+            <Button Cursor="Hand" MaxHeight="32" Command="{Binding CopyResponseToCollection}" Margin="6">
               <Viewbox>
                 <Canvas Width="24" Height="24">
                   <Path Fill="{DynamicResource NotificationCardInformationBackgroundBrush}" Data="M5.59,7.41L7,6L13,12L7,18L5.59,16.59L10.17,12L5.59,7.41M11.59,7.41L13,6L19,12L13,18L11.59,16.59L16.17,12L11.59,7.41Z" />
@@ -62,7 +62,7 @@
                 </Style>
               </Button.Styles>
             </Button>
-            <Button Cursor="Hand" MaxHeight="32" Command="{Binding DeleteSelectedResponses}" Margin="5">
+            <Button Cursor="Hand" MaxHeight="32" Command="{Binding DeleteSelectedResponses}" Margin="6">
               <Viewbox>
                 <Canvas Width="24" Height="24">
                   <Path Fill="{DynamicResource NotificationCardErrorBackgroundBrush}" Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
@@ -83,7 +83,7 @@
               </Button.Styles>
             </Button>
           </WrapPanel>
-          <ListBox Items="{Binding History, Mode=TwoWay}" SelectedItem="{Binding SelectedHistory}" Grid.Row="1" Margin="-5">
+          <ListBox Items="{Binding History, Mode=TwoWay}" SelectedItem="{Binding SelectedHistory}" Grid.Row="1" Margin="-4">
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto, Auto, Auto" Margin="5">
@@ -194,7 +194,7 @@
         <RowDefinition Height="*" MinHeight="200"/>
       </Grid.RowDefinitions>
 
-      <Grid ColumnDefinitions="auto,1*,auto,6*,auto">
+      <Grid ColumnDefinitions="auto,auto,auto,6*,auto">
         <TextBlock Text="Method" VerticalAlignment="Center" Margin="5,5,2,5"/>
         <ComboBox Grid.Column="1" VerticalAlignment="Center" Margin="0,5" Items="{Binding HttpMethods}" SelectedItem="{Binding SelectedMethod}"/>
         <TextBlock Text="Url" Grid.Column="2" VerticalAlignment="Center" Margin="5,5,2,5"/>
@@ -230,16 +230,16 @@
               <ListBox Items="{Binding Params, Mode=TwoWay}">
                 <ListBox.ItemTemplate>
                   <DataTemplate>
-                    <Grid ColumnDefinitions="Auto,Auto,Auto,Auto">
+                    <Grid ColumnDefinitions="20,auto,auto,*">
                       <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
-                      <TextBox Grid.Column="1" Text="{Binding Key, Mode=TwoWay}" Watermark="Key" Margin="2,3" MinWidth="50" MaxWidth="200" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
-                      <TextBox Grid.Column="2" Text="{Binding Value, Mode=TwoWay}" Watermark="Value" Margin="2,3" MinWidth="50" MaxWidth="200" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
-                      <TextBox Grid.Column="3" Text="{Binding Notes, Mode=TwoWay}" Watermark="Description" Margin="2,3" MinWidth="50" MaxWidth="200" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                      <TextBox Grid.Column="1" Text="{Binding Key, Mode=TwoWay}" Watermark="Key" Margin="2,3" VerticalAlignment="Stretch" MinWidth="50" MaxWidth="150" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                      <TextBox Grid.Column="2" Text="{Binding Value, Mode=TwoWay}" Watermark="Value" Margin="2,3" VerticalAlignment="Stretch" MinWidth="50" MaxWidth="150" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                      <TextBox Grid.Column="3" Text="{Binding Notes, Mode=TwoWay}" Watermark="Description" Margin="2,3" VerticalAlignment="Stretch" MinWidth="50" MaxWidth="300" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
                     </Grid>
                   </DataTemplate>
                 </ListBox.ItemTemplate>
               </ListBox>
-              <Button Cursor="Hand" MaxHeight="32" Command="{Binding AddNewParam}" Margin="2,3" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" VerticalContentAlignment="Top">
+              <Button Cursor="Hand" MaxHeight="32" Command="{Binding AddNewParam}" Margin="2,15" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Right" VerticalContentAlignment="Top">
                 <Viewbox>
                   <Canvas Width="24" Height="24">
                     <Path Fill="{DynamicResource NotificationCardInformationBackgroundBrush}" Data="M2,16H10V14H2M18,14V10H16V14H12V16H16V20H18V16H22V14M14,6H2V8H14M14,10H2V12H14V10Z" />
@@ -277,7 +277,7 @@
 
         </TabItem>
         <TabItem Header="Body">
-          <TextBox AcceptsReturn="True" AcceptsTab="True" Text="{Binding RequestBody, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" TextWrapping="Wrap" />
+          <TextBox AcceptsReturn="True" AcceptsTab="True" Text="{Binding RequestBody, Mode=TwoWay}" MinHeight="100" MaxHeight="250" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" TextWrapping="Wrap" />
         </TabItem>
         <TabItem Header="Settings">
 
