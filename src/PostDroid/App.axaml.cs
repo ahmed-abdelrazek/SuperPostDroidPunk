@@ -22,6 +22,7 @@ namespace SuperPostDroidPunk
             {
                 desktop.MainWindow = new MainWindow();
                 _notificationManager = new WindowNotificationManager(desktop.MainWindow);
+                _notificationManager.Position = NotificationPosition.BottomRight;
                 desktop.MainWindow.DataContext = new MainWindowViewModel(_notificationManager);
             }
 
