@@ -21,8 +21,10 @@ namespace SuperPostDroidPunk
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.MainWindow = new MainWindow();
-                _notificationManager = new WindowNotificationManager(desktop.MainWindow);
-                _notificationManager.Position = NotificationPosition.BottomRight;
+                _notificationManager = new WindowNotificationManager(desktop.MainWindow)
+                {
+                    Position = NotificationPosition.BottomRight
+                };
                 desktop.MainWindow.DataContext = new MainWindowViewModel(_notificationManager);
             }
 
