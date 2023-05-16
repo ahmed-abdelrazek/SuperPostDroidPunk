@@ -1,5 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.ReactiveUI;
+using Xilium.CefGlue;
+using Xilium.CefGlue.Common;
 
 namespace SuperPostDroidPunk
 {
@@ -15,6 +17,11 @@ namespace SuperPostDroidPunk
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
+                .With(new Win32PlatformOptions
+                {
+                    UseWindowsUIComposition = false
+                })
+                .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings()))
                 .LogToTrace()
                 .UseReactiveUI();
     }
